@@ -15,10 +15,9 @@ Delta API에 대한 모든 요청에는 Authorization 헤더에 유효한 베어
 
 | Method | Path | Description |
 | --- | --- | --- |
-| GET | `/v1/delta/status` | Health/status check |
-| GET | `/v1/delta/resources` | List resources |
-| POST | `/v1/delta/resources` | Create a resource |
-| DELETE | `/v1/delta/resources/:id` | Delete a resource |
+| POST | `/v1/delta/syncs` | Create a sync link between two services |
+| GET | `/v1/delta/syncs/:id/status` | Check sync lag and health |
+| DELETE | `/v1/delta/syncs/:id` | Tear down a sync link |
 
 ## 지원
 

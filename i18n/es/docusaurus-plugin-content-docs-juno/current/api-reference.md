@@ -15,10 +15,9 @@ La siguiente tabla enumera los principales endpoints expuestos por la API de Jun
 
 | Method | Path | Description |
 | --- | --- | --- |
-| GET | `/v1/juno/status` | Health/status check |
-| GET | `/v1/juno/resources` | List resources |
-| POST | `/v1/juno/resources` | Create a resource |
-| DELETE | `/v1/juno/resources/:id` | Delete a resource |
+| POST | `/v1/juno/jobs` | Schedule a job |
+| GET | `/v1/juno/jobs/:id/runs` | List a job's execution history |
+| POST | `/v1/juno/jobs/:id/pause` | Pause a scheduled job |
 
 ## Soporte
 

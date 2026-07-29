@@ -15,10 +15,9 @@ Cascade API에 대한 모든 요청에는 Authorization 헤더에 유효한 베�
 
 | Method | Path | Description |
 | --- | --- | --- |
-| GET | `/v1/cascade/status` | Health/status check |
-| GET | `/v1/cascade/resources` | List resources |
-| POST | `/v1/cascade/resources` | Create a resource |
-| DELETE | `/v1/cascade/resources/:id` | Delete a resource |
+| POST | `/v1/cascade/pipelines` | Create a data pipeline |
+| GET | `/v1/cascade/runs/:id` | Get a pipeline run's status |
+| POST | `/v1/cascade/pipelines/:id/trigger` | Manually trigger a pipeline run |
 
 ## 지원
 

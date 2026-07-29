@@ -15,10 +15,9 @@ Meridian API へのすべてのリクエストには、Authorization ヘッダ�
 
 | Method | Path | Description |
 | --- | --- | --- |
-| GET | `/v1/meridian/status` | Health/status check |
-| GET | `/v1/meridian/resources` | List resources |
-| POST | `/v1/meridian/resources` | Create a resource |
-| DELETE | `/v1/meridian/resources/:id` | Delete a resource |
+| POST | `/v1/meridian/workflows` | Create a workflow |
+| POST | `/v1/meridian/workflows/:id/runs` | Trigger a workflow run |
+| GET | `/v1/meridian/workflows/:id/runs/:runId` | Get run status and step output |
 
 ## サポート
 

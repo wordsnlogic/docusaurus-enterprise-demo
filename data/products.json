@@ -1,17 +1,242 @@
 [
-  { "id": "atlas", "name": "Atlas", "tagline": "Product analytics and event tracking", "versioned": true },
-  { "id": "beacon", "name": "Beacon", "tagline": "Uptime monitoring and alerting", "versioned": true },
-  { "id": "cascade", "name": "Cascade", "tagline": "Managed data pipelines and ETL", "versioned": false },
-  { "id": "delta", "name": "Delta", "tagline": "Real-time data sync across services", "versioned": false },
-  { "id": "echo", "name": "Echo", "tagline": "Programmable chat and messaging API", "versioned": false },
-  { "id": "falcon", "name": "Falcon", "tagline": "Hosted full-text and vector search", "versioned": false },
-  { "id": "genesis", "name": "Genesis", "tagline": "Identity, auth, and SSO platform", "versioned": false },
-  { "id": "horizon", "name": "Horizon", "tagline": "Embeddable dashboards and BI", "versioned": false },
-  { "id": "ion", "name": "Ion", "tagline": "Global payments and billing", "versioned": false },
-  { "id": "juno", "name": "Juno", "tagline": "Distributed job scheduling", "versioned": false },
-  { "id": "kepler", "name": "Kepler", "tagline": "Geospatial and mapping APIs", "versioned": false },
-  { "id": "lumen", "name": "Lumen", "tagline": "Transactional email, SMS, and push", "versioned": false },
-  { "id": "meridian", "name": "Meridian", "tagline": "Workflow automation engine", "versioned": false },
-  { "id": "nova", "name": "Nova", "tagline": "Managed ML model hosting", "versioned": false },
-  { "id": "orion", "name": "Orion", "tagline": "Object storage and CDN", "versioned": false }
+  {
+    "id": "atlas",
+    "name": "Atlas",
+    "tagline": "Product analytics and event tracking",
+    "versioned": true,
+    "keyFeatures": [
+      "Real-time event streaming with sub-second ingestion",
+      "Custom funnels and retention cohorts",
+      "SQL-based ad-hoc querying over raw event data"
+    ],
+    "endpoints": [
+      {"method": "POST", "path": "/v1/atlas/events", "description": "Ingest a batch of analytics events"},
+      {"method": "GET", "path": "/v1/atlas/funnels/:id", "description": "Retrieve funnel conversion data"},
+      {"method": "GET", "path": "/v1/atlas/cohorts/:id", "description": "Retrieve a retention cohort"}
+    ]
+  },
+  {
+    "id": "beacon",
+    "name": "Beacon",
+    "tagline": "Uptime monitoring and alerting",
+    "versioned": true,
+    "keyFeatures": [
+      "Multi-region synthetic checks every 30 seconds",
+      "Alert routing to Slack, PagerDuty, and email",
+      "Public, brandable status pages per customer"
+    ],
+    "endpoints": [
+      {"method": "POST", "path": "/v1/beacon/monitors", "description": "Create a new uptime monitor"},
+      {"method": "GET", "path": "/v1/beacon/incidents", "description": "List open and resolved incidents"},
+      {"method": "POST", "path": "/v1/beacon/status-pages", "description": "Publish a public status page"}
+    ]
+  },
+  {
+    "id": "cascade",
+    "name": "Cascade",
+    "tagline": "Managed data pipelines and ETL",
+    "versioned": false,
+    "keyFeatures": [
+      "Declarative pipeline definitions in YAML",
+      "Built-in connectors for 40+ data sources",
+      "Automatic schema drift detection"
+    ],
+    "endpoints": [
+      {"method": "POST", "path": "/v1/cascade/pipelines", "description": "Create a data pipeline"},
+      {"method": "GET", "path": "/v1/cascade/runs/:id", "description": "Get a pipeline run's status"},
+      {"method": "POST", "path": "/v1/cascade/pipelines/:id/trigger", "description": "Manually trigger a pipeline run"}
+    ]
+  },
+  {
+    "id": "delta",
+    "name": "Delta",
+    "tagline": "Real-time data sync across services",
+    "versioned": false,
+    "keyFeatures": [
+      "Bi-directional sync with conflict resolution",
+      "Sub-second propagation between endpoints",
+      "Change-data-capture from Postgres, MySQL, and Mongo"
+    ],
+    "endpoints": [
+      {"method": "POST", "path": "/v1/delta/syncs", "description": "Create a sync link between two services"},
+      {"method": "GET", "path": "/v1/delta/syncs/:id/status", "description": "Check sync lag and health"},
+      {"method": "DELETE", "path": "/v1/delta/syncs/:id", "description": "Tear down a sync link"}
+    ]
+  },
+  {
+    "id": "echo",
+    "name": "Echo",
+    "tagline": "Programmable chat and messaging API",
+    "versioned": false,
+    "keyFeatures": [
+      "Drop-in chat UI components for web and mobile",
+      "End-to-end encrypted channels",
+      "Webhooks for every message and presence event"
+    ],
+    "endpoints": [
+      {"method": "POST", "path": "/v1/echo/channels", "description": "Create a chat channel"},
+      {"method": "POST", "path": "/v1/echo/messages", "description": "Send a message to a channel"},
+      {"method": "GET", "path": "/v1/echo/channels/:id/messages", "description": "Fetch channel message history"}
+    ]
+  },
+  {
+    "id": "falcon",
+    "name": "Falcon",
+    "tagline": "Hosted full-text and vector search",
+    "versioned": false,
+    "keyFeatures": [
+      "Hybrid keyword + vector ranking",
+      "Typo-tolerant fuzzy matching",
+      "Sub-100ms query latency at 10M+ documents"
+    ],
+    "endpoints": [
+      {"method": "POST", "path": "/v1/falcon/indexes", "description": "Create a search index"},
+      {"method": "POST", "path": "/v1/falcon/indexes/:id/documents", "description": "Index a batch of documents"},
+      {"method": "POST", "path": "/v1/falcon/indexes/:id/query", "description": "Run a search query"}
+    ]
+  },
+  {
+    "id": "genesis",
+    "name": "Genesis",
+    "tagline": "Identity, auth, and SSO platform",
+    "versioned": false,
+    "keyFeatures": [
+      "SAML and OIDC SSO out of the box",
+      "Passwordless magic-link and passkey login",
+      "Fine-grained role-based access control"
+    ],
+    "endpoints": [
+      {"method": "POST", "path": "/v1/genesis/users", "description": "Create a user"},
+      {"method": "POST", "path": "/v1/genesis/sessions", "description": "Start an authenticated session"},
+      {"method": "POST", "path": "/v1/genesis/sso/connections", "description": "Configure an enterprise SSO connection"}
+    ]
+  },
+  {
+    "id": "horizon",
+    "name": "Horizon",
+    "tagline": "Embeddable dashboards and BI",
+    "versioned": false,
+    "keyFeatures": [
+      "Drag-and-drop dashboard builder",
+      "Row-level data security per embed",
+      "White-labeled embeds via signed tokens"
+    ],
+    "endpoints": [
+      {"method": "POST", "path": "/v1/horizon/dashboards", "description": "Create a dashboard"},
+      {"method": "GET", "path": "/v1/horizon/dashboards/:id/embed-token", "description": "Generate a signed embed token"},
+      {"method": "GET", "path": "/v1/horizon/datasets", "description": "List connected datasets"}
+    ]
+  },
+  {
+    "id": "ion",
+    "name": "Ion",
+    "tagline": "Global payments and billing",
+    "versioned": false,
+    "keyFeatures": [
+      "135+ currencies and local payment methods",
+      "PCI-DSS Level 1 compliant card vaulting",
+      "Usage-based and subscription billing"
+    ],
+    "endpoints": [
+      {"method": "POST", "path": "/v1/ion/charges", "description": "Create a one-time charge"},
+      {"method": "POST", "path": "/v1/ion/subscriptions", "description": "Create a subscription"},
+      {"method": "POST", "path": "/v1/ion/refunds", "description": "Issue a refund"}
+    ]
+  },
+  {
+    "id": "juno",
+    "name": "Juno",
+    "tagline": "Distributed job scheduling",
+    "versioned": false,
+    "keyFeatures": [
+      "Cron and event-triggered jobs",
+      "At-least-once and exactly-once delivery modes",
+      "Automatic retries with exponential backoff"
+    ],
+    "endpoints": [
+      {"method": "POST", "path": "/v1/juno/jobs", "description": "Schedule a job"},
+      {"method": "GET", "path": "/v1/juno/jobs/:id/runs", "description": "List a job's execution history"},
+      {"method": "POST", "path": "/v1/juno/jobs/:id/pause", "description": "Pause a scheduled job"}
+    ]
+  },
+  {
+    "id": "kepler",
+    "name": "Kepler",
+    "tagline": "Geospatial and mapping APIs",
+    "versioned": false,
+    "keyFeatures": [
+      "Turn-by-turn routing and ETAs",
+      "Reverse geocoding at street-level accuracy",
+      "Geofencing with real-time enter/exit events"
+    ],
+    "endpoints": [
+      {"method": "GET", "path": "/v1/kepler/geocode", "description": "Convert an address to coordinates"},
+      {"method": "POST", "path": "/v1/kepler/routes", "description": "Calculate a route between points"},
+      {"method": "POST", "path": "/v1/kepler/geofences", "description": "Create a geofence"}
+    ]
+  },
+  {
+    "id": "lumen",
+    "name": "Lumen",
+    "tagline": "Transactional email, SMS, and push",
+    "versioned": false,
+    "keyFeatures": [
+      "Multi-channel delivery from one API",
+      "Built-in deliverability and bounce handling",
+      "Template management with versioning"
+    ],
+    "endpoints": [
+      {"method": "POST", "path": "/v1/lumen/messages", "description": "Send a transactional message"},
+      {"method": "GET", "path": "/v1/lumen/messages/:id", "description": "Check delivery status"},
+      {"method": "POST", "path": "/v1/lumen/templates", "description": "Create a message template"}
+    ]
+  },
+  {
+    "id": "meridian",
+    "name": "Meridian",
+    "tagline": "Workflow automation engine",
+    "versioned": false,
+    "keyFeatures": [
+      "Visual workflow builder with branching logic",
+      "200+ pre-built integration steps",
+      "Human-in-the-loop approval steps"
+    ],
+    "endpoints": [
+      {"method": "POST", "path": "/v1/meridian/workflows", "description": "Create a workflow"},
+      {"method": "POST", "path": "/v1/meridian/workflows/:id/runs", "description": "Trigger a workflow run"},
+      {"method": "GET", "path": "/v1/meridian/workflows/:id/runs/:runId", "description": "Get run status and step output"}
+    ]
+  },
+  {
+    "id": "nova",
+    "name": "Nova",
+    "tagline": "Managed ML model hosting",
+    "versioned": false,
+    "keyFeatures": [
+      "One-command deploy from common ML frameworks",
+      "Auto-scaling GPU inference endpoints",
+      "Built-in request/response logging for drift detection"
+    ],
+    "endpoints": [
+      {"method": "POST", "path": "/v1/nova/models", "description": "Deploy a model"},
+      {"method": "POST", "path": "/v1/nova/models/:id/predict", "description": "Run inference against a deployed model"},
+      {"method": "GET", "path": "/v1/nova/models/:id/metrics", "description": "Get latency and throughput metrics"}
+    ]
+  },
+  {
+    "id": "orion",
+    "name": "Orion",
+    "tagline": "Object storage and CDN",
+    "versioned": false,
+    "keyFeatures": [
+      "Global edge caching with instant invalidation",
+      "Automatic image resizing and format negotiation",
+      "S3-compatible API"
+    ],
+    "endpoints": [
+      {"method": "PUT", "path": "/v1/orion/buckets/:bucket/objects/:key", "description": "Upload an object"},
+      {"method": "GET", "path": "/v1/orion/buckets/:bucket/objects/:key", "description": "Retrieve an object"},
+      {"method": "POST", "path": "/v1/orion/buckets/:bucket/purge", "description": "Purge CDN cache for a path"}
+    ]
+  }
 ]

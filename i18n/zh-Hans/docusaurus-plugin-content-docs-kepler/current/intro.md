@@ -9,6 +9,12 @@ sidebar_position: 1
 
 Kepler 是 Northwind Cloud 平台众多产品线之一。
 
+## 核心功能
+
+- Turn-by-turn routing and ETAs
+- Reverse geocoding at street-level accuracy
+- Geofencing with real-time enter/exit events
+
 ## 本节内容
 
 本节介绍安装、配置以及与该产品集成所需的核心概念。

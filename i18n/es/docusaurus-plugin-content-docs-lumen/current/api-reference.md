@@ -15,10 +15,9 @@ La siguiente tabla enumera los principales endpoints expuestos por la API de Lum
 
 | Method | Path | Description |
 | --- | --- | --- |
-| GET | `/v1/lumen/status` | Health/status check |
-| GET | `/v1/lumen/resources` | List resources |
-| POST | `/v1/lumen/resources` | Create a resource |
-| DELETE | `/v1/lumen/resources/:id` | Delete a resource |
+| POST | `/v1/lumen/messages` | Send a transactional message |
+| GET | `/v1/lumen/messages/:id` | Check delivery status |
+| POST | `/v1/lumen/templates` | Create a message template |
 
 ## Soporte
 

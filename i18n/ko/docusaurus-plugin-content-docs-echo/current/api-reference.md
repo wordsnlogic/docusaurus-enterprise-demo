@@ -15,10 +15,9 @@ Echo API에 대한 모든 요청에는 Authorization 헤더에 유효한 베어�
 
 | Method | Path | Description |
 | --- | --- | --- |
-| GET | `/v1/echo/status` | Health/status check |
-| GET | `/v1/echo/resources` | List resources |
-| POST | `/v1/echo/resources` | Create a resource |
-| DELETE | `/v1/echo/resources/:id` | Delete a resource |
+| POST | `/v1/echo/channels` | Create a chat channel |
+| POST | `/v1/echo/messages` | Send a message to a channel |
+| GET | `/v1/echo/channels/:id/messages` | Fetch channel message history |
 
 ## 지원
 

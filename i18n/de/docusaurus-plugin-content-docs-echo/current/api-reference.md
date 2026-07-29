@@ -15,10 +15,9 @@ Die folgende Tabelle listet die wichtigsten Endpunkte der Echo-API auf.
 
 | Method | Path | Description |
 | --- | --- | --- |
-| GET | `/v1/echo/status` | Health/status check |
-| GET | `/v1/echo/resources` | List resources |
-| POST | `/v1/echo/resources` | Create a resource |
-| DELETE | `/v1/echo/resources/:id` | Delete a resource |
+| POST | `/v1/echo/channels` | Create a chat channel |
+| POST | `/v1/echo/messages` | Send a message to a channel |
+| GET | `/v1/echo/channels/:id/messages` | Fetch channel message history |
 
 ## Support
 

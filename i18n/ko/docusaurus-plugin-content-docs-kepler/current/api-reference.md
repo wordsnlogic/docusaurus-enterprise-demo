@@ -15,10 +15,9 @@ Kepler API에 대한 모든 요청에는 Authorization 헤더에 유효한 베�
 
 | Method | Path | Description |
 | --- | --- | --- |
-| GET | `/v1/kepler/status` | Health/status check |
-| GET | `/v1/kepler/resources` | List resources |
-| POST | `/v1/kepler/resources` | Create a resource |
-| DELETE | `/v1/kepler/resources/:id` | Delete a resource |
+| GET | `/v1/kepler/geocode` | Convert an address to coordinates |
+| POST | `/v1/kepler/routes` | Calculate a route between points |
+| POST | `/v1/kepler/geofences` | Create a geofence |
 
 ## 지원
 

@@ -15,10 +15,9 @@ Orion API에 대한 모든 요청에는 Authorization 헤더에 유효한 베어
 
 | Method | Path | Description |
 | --- | --- | --- |
-| GET | `/v1/orion/status` | Health/status check |
-| GET | `/v1/orion/resources` | List resources |
-| POST | `/v1/orion/resources` | Create a resource |
-| DELETE | `/v1/orion/resources/:id` | Delete a resource |
+| PUT | `/v1/orion/buckets/:bucket/objects/:key` | Upload an object |
+| GET | `/v1/orion/buckets/:bucket/objects/:key` | Retrieve an object |
+| POST | `/v1/orion/buckets/:bucket/purge` | Purge CDN cache for a path |
 
 ## 지원
 

@@ -15,10 +15,9 @@ A tabela abaixo lista os principais endpoints expostos pela API do Orion.
 
 | Method | Path | Description |
 | --- | --- | --- |
-| GET | `/v1/orion/status` | Health/status check |
-| GET | `/v1/orion/resources` | List resources |
-| POST | `/v1/orion/resources` | Create a resource |
-| DELETE | `/v1/orion/resources/:id` | Delete a resource |
+| PUT | `/v1/orion/buckets/:bucket/objects/:key` | Upload an object |
+| GET | `/v1/orion/buckets/:bucket/objects/:key` | Retrieve an object |
+| POST | `/v1/orion/buckets/:bucket/purge` | Purge CDN cache for a path |
 
 ## Suporte
 

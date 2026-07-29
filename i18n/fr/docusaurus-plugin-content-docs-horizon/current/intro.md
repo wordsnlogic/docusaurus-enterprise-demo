@@ -9,6 +9,12 @@ Bienvenue dans la documentation de Horizon.
 
 Horizon est l'une des gammes de produits de la plateforme Northwind Cloud.
 
+## Fonctionnalités clés
+
+- Drag-and-drop dashboard builder
+- Row-level data security per embed
+- White-labeled embeds via signed tokens
+
 ## Contenu de cette section
 
 Cette section couvre l'installation, la configuration et les concepts essentiels pour intégrer ce produit.

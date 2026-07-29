@@ -15,10 +15,9 @@ La siguiente tabla enumera los principales endpoints expuestos por la API de Hor
 
 | Method | Path | Description |
 | --- | --- | --- |
-| GET | `/v1/horizon/status` | Health/status check |
-| GET | `/v1/horizon/resources` | List resources |
-| POST | `/v1/horizon/resources` | Create a resource |
-| DELETE | `/v1/horizon/resources/:id` | Delete a resource |
+| POST | `/v1/horizon/dashboards` | Create a dashboard |
+| GET | `/v1/horizon/dashboards/:id/embed-token` | Generate a signed embed token |
+| GET | `/v1/horizon/datasets` | List connected datasets |
 
 ## Soporte
 

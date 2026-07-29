@@ -15,10 +15,9 @@ La tabella seguente elenca i principali endpoint esposti dall'API di Atlas.
 
 | Method | Path | Description |
 | --- | --- | --- |
-| GET | `/v1/atlas/status` | Health/status check |
-| GET | `/v1/atlas/resources` | List resources |
-| POST | `/v1/atlas/resources` | Create a resource |
-| DELETE | `/v1/atlas/resources/:id` | Delete a resource |
+| POST | `/v1/atlas/events` | Ingest a batch of analytics events |
+| GET | `/v1/atlas/funnels/:id` | Retrieve funnel conversion data |
+| GET | `/v1/atlas/cohorts/:id` | Retrieve a retention cohort |
 
 ## Supporto
 

@@ -15,10 +15,9 @@ Falcon API에 대한 모든 요청에는 Authorization 헤더에 유효한 베�
 
 | Method | Path | Description |
 | --- | --- | --- |
-| GET | `/v1/falcon/status` | Health/status check |
-| GET | `/v1/falcon/resources` | List resources |
-| POST | `/v1/falcon/resources` | Create a resource |
-| DELETE | `/v1/falcon/resources/:id` | Delete a resource |
+| POST | `/v1/falcon/indexes` | Create a search index |
+| POST | `/v1/falcon/indexes/:id/documents` | Index a batch of documents |
+| POST | `/v1/falcon/indexes/:id/query` | Run a search query |
 
 ## 지원
 

@@ -21,6 +21,7 @@ const STRINGS = {
     introTitle: "Introduction",
     gettingStartedTitle: "Getting Started",
     apiRefTitle: "API Reference",
+    keyFeaturesTitle: "Key features",
     welcome: (p) => `Welcome to the ${p} documentation.`,
     overview: (p) => `${p} is one of the product lines in the Northwind Cloud platform. ${TAGLINE_PLACEHOLDER}`,
     whatYoullFind: "What you'll find here",
@@ -42,6 +43,7 @@ const STRINGS = {
     introTitle: "소개",
     gettingStartedTitle: "시작하기",
     apiRefTitle: "API 참조",
+    keyFeaturesTitle: "주요 기능",
     welcome: (p) => `${p} 문서에 오신 것을 환영합니다.`,
     overview: (p) => `${p}는 Northwind Cloud 플랫폼의 제품 라인 중 하나입니다.`,
     whatYoullFind: "이 문서에서 다루는 내용",
@@ -63,6 +65,7 @@ const STRINGS = {
     introTitle: "Einführung",
     gettingStartedTitle: "Erste Schritte",
     apiRefTitle: "API-Referenz",
+    keyFeaturesTitle: "Hauptfunktionen",
     welcome: (p) => `Willkommen in der ${p}-Dokumentation.`,
     overview: (p) => `${p} ist eine der Produktlinien der Northwind-Cloud-Plattform.`,
     whatYoullFind: "Was Sie hier finden",
@@ -84,6 +87,7 @@ const STRINGS = {
     introTitle: "Introduction",
     gettingStartedTitle: "Prise en main",
     apiRefTitle: "Référence API",
+    keyFeaturesTitle: "Fonctionnalités clés",
     welcome: (p) => `Bienvenue dans la documentation de ${p}.`,
     overview: (p) => `${p} est l'une des gammes de produits de la plateforme Northwind Cloud.`,
     whatYoullFind: "Contenu de cette section",
@@ -105,6 +109,7 @@ const STRINGS = {
     introTitle: "简介",
     gettingStartedTitle: "快速入门",
     apiRefTitle: "API 参考",
+    keyFeaturesTitle: "核心功能",
     welcome: (p) => `欢迎查阅 ${p} 文档。`,
     overview: (p) => `${p} 是 Northwind Cloud 平台众多产品线之一。`,
     whatYoullFind: "本节内容",
@@ -126,6 +131,7 @@ const STRINGS = {
     introTitle: "はじめに",
     gettingStartedTitle: "使ってみる",
     apiRefTitle: "API リファレンス",
+    keyFeaturesTitle: "主な機能",
     welcome: (p) => `${p} のドキュメントへようこそ。`,
     overview: (p) => `${p} は Northwind Cloud プラットフォームの製品ラインのひとつです。`,
     whatYoullFind: "このセクションの内容",
@@ -147,6 +153,7 @@ const STRINGS = {
     introTitle: "Introducción",
     gettingStartedTitle: "Primeros pasos",
     apiRefTitle: "Referencia de la API",
+    keyFeaturesTitle: "Características principales",
     welcome: (p) => `Bienvenido a la documentación de ${p}.`,
     overview: (p) => `${p} es una de las líneas de producto de la plataforma Northwind Cloud.`,
     whatYoullFind: "Qué encontrarás aquí",
@@ -168,6 +175,7 @@ const STRINGS = {
     introTitle: "Introdução",
     gettingStartedTitle: "Primeiros passos",
     apiRefTitle: "Referência da API",
+    keyFeaturesTitle: "Principais recursos",
     welcome: (p) => `Bem-vindo à documentação do ${p}.`,
     overview: (p) => `${p} é uma das linhas de produtos da plataforma Northwind Cloud.`,
     whatYoullFind: "O que você vai encontrar aqui",
@@ -189,6 +197,7 @@ const STRINGS = {
     introTitle: "Introduzione",
     gettingStartedTitle: "Guida introduttiva",
     apiRefTitle: "Riferimento API",
+    keyFeaturesTitle: "Caratteristiche principali",
     welcome: (p) => `Benvenuto nella documentazione di ${p}.`,
     overview: (p) => `${p} è una delle linee di prodotto della piattaforma Northwind Cloud.`,
     whatYoullFind: "Cosa troverai qui",
@@ -216,6 +225,7 @@ function overviewLine(strings, product) {
 }
 
 function introDoc(strings, product) {
+  const features = product.keyFeatures.map((f) => `- ${f}`).join("\n");
   return `---
 title: ${strings.introTitle}
 sidebar_position: 1
@@ -226,6 +236,10 @@ sidebar_position: 1
 ${strings.welcome(product.name)}
 
 ${overviewLine(strings, product)}
+
+## ${strings.keyFeaturesTitle}
+
+${features}
 
 ## ${strings.whatYoullFind}
 
@@ -266,6 +280,9 @@ const client = new ${product.name}({ apiKey: process.env.NORTHWIND_API_KEY });
 }
 
 function apiRefDoc(strings, product) {
+  const rows = product.endpoints
+    .map((e) => `| ${e.method} | \`${e.path}\` | ${e.description} |`)
+    .join("\n");
   return `---
 title: ${strings.apiRefTitle}
 sidebar_position: 3
@@ -283,10 +300,7 @@ ${strings.endpointsBody(product.name)}
 
 | Method | Path | Description |
 | --- | --- | --- |
-| GET | \`/v1/${product.id}/status\` | Health/status check |
-| GET | \`/v1/${product.id}/resources\` | List resources |
-| POST | \`/v1/${product.id}/resources\` | Create a resource |
-| DELETE | \`/v1/${product.id}/resources/:id\` | Delete a resource |
+${rows}
 
 ## ${strings.support}
 

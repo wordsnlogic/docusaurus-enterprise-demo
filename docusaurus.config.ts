@@ -26,7 +26,7 @@ const productDocsPlugins: Config['plugins'] = products.map((product) => [
 const config: Config = {
   title: 'Northwind Cloud Docs',
   tagline: 'One documentation platform for 15 product lines, 9 languages, and counting',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/favicon.svg',
 
   future: {
     v4: true,
@@ -157,6 +157,7 @@ const config: Config = {
             {label: 'Versioning strategy', to: '/docs/versioning-strategy'},
             {label: 'Localization strategy', to: '/docs/i18n-strategy'},
             {label: 'Performance', to: '/docs/performance'},
+            {label: 'Why Docusaurus', to: '/docs/tooling-evaluation'},
           ],
         },
         {

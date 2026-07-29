@@ -15,10 +15,9 @@ Genesis API에 대한 모든 요청에는 Authorization 헤더에 유효한 베�
 
 | Method | Path | Description |
 | --- | --- | --- |
-| GET | `/v1/genesis/status` | Health/status check |
-| GET | `/v1/genesis/resources` | List resources |
-| POST | `/v1/genesis/resources` | Create a resource |
-| DELETE | `/v1/genesis/resources/:id` | Delete a resource |
+| POST | `/v1/genesis/users` | Create a user |
+| POST | `/v1/genesis/sessions` | Start an authenticated session |
+| POST | `/v1/genesis/sso/connections` | Configure an enterprise SSO connection |
 
 ## 지원
 

@@ -5,14 +5,14 @@ import styles from './styles.module.css';
 
 type FeatureItem = {
   title: string;
-  Svg: React.ComponentType<React.ComponentProps<'svg'>>;
+  icon: string;
   description: ReactNode;
 };
 
 const FeatureList: FeatureItem[] = [
   {
     title: '15 product lines, 1 site',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    icon: '\u{1F4E6}',
     description: (
       <>
         Each product is its own <code>@docusaurus/plugin-content-docs</code>{' '}
@@ -23,7 +23,7 @@ const FeatureList: FeatureItem[] = [
   },
   {
     title: '9 locales, 2 versioned products',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    icon: '\u{1F310}',
     description: (
       <>
         English + 8 languages, with Atlas and Beacon independently versioned
@@ -34,7 +34,7 @@ const FeatureList: FeatureItem[] = [
   },
   {
     title: 'Built for scale, honestly',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    icon: '⚡',
     description: (
       <>
         This is a real stress test, not a mockup — read what actually
@@ -45,11 +45,13 @@ const FeatureList: FeatureItem[] = [
   },
 ];
 
-function Feature({title, Svg, description}: FeatureItem) {
+function Feature({title, icon, description}: FeatureItem) {
   return (
     <div className={clsx('col col--4')}>
       <div className="text--center">
-        <Svg className={styles.featureSvg} role="img" />
+        <div className={styles.featureIcon} aria-hidden="true">
+          {icon}
+        </div>
       </div>
       <div className="text--center padding-horiz--md">
         <Heading as="h3">{title}</Heading>

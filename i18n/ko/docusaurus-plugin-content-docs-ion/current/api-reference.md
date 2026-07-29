@@ -15,10 +15,9 @@ Ion API에 대한 모든 요청에는 Authorization 헤더에 유효한 베어�
 
 | Method | Path | Description |
 | --- | --- | --- |
-| GET | `/v1/ion/status` | Health/status check |
-| GET | `/v1/ion/resources` | List resources |
-| POST | `/v1/ion/resources` | Create a resource |
-| DELETE | `/v1/ion/resources/:id` | Delete a resource |
+| POST | `/v1/ion/charges` | Create a one-time charge |
+| POST | `/v1/ion/subscriptions` | Create a subscription |
+| POST | `/v1/ion/refunds` | Issue a refund |
 
 ## 지원
 

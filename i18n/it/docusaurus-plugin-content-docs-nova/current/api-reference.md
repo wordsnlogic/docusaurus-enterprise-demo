@@ -15,10 +15,9 @@ La tabella seguente elenca i principali endpoint esposti dall'API di Nova.
 
 | Method | Path | Description |
 | --- | --- | --- |
-| GET | `/v1/nova/status` | Health/status check |
-| GET | `/v1/nova/resources` | List resources |
-| POST | `/v1/nova/resources` | Create a resource |
-| DELETE | `/v1/nova/resources/:id` | Delete a resource |
+| POST | `/v1/nova/models` | Deploy a model |
+| POST | `/v1/nova/models/:id/predict` | Run inference against a deployed model |
+| GET | `/v1/nova/models/:id/metrics` | Get latency and throughput metrics |
 
 ## Supporto
 

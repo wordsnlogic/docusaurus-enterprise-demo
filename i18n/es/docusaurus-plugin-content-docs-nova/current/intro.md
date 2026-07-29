@@ -9,6 +9,12 @@ Bienvenido a la documentación de Nova.
 
 Nova es una de las líneas de producto de la plataforma Northwind Cloud.
 
+## Características principales
+
+- One-command deploy from common ML frameworks
+- Auto-scaling GPU inference endpoints
+- Built-in request/response logging for drift detection
+
 ## Qué encontrarás aquí
 
 Esta sección cubre la instalación, la configuración y los conceptos clave para integrarte con este producto.

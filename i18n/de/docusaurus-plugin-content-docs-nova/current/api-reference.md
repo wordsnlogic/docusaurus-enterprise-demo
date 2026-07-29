@@ -15,10 +15,9 @@ Die folgende Tabelle listet die wichtigsten Endpunkte der Nova-API auf.
 
 | Method | Path | Description |
 | --- | --- | --- |
-| GET | `/v1/nova/status` | Health/status check |
-| GET | `/v1/nova/resources` | List resources |
-| POST | `/v1/nova/resources` | Create a resource |
-| DELETE | `/v1/nova/resources/:id` | Delete a resource |
+| POST | `/v1/nova/models` | Deploy a model |
+| POST | `/v1/nova/models/:id/predict` | Run inference against a deployed model |
+| GET | `/v1/nova/models/:id/metrics` | Get latency and throughput metrics |
 
 ## Support
 

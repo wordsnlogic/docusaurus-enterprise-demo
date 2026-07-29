@@ -15,10 +15,9 @@ La siguiente tabla enumera los principales endpoints expuestos por la API de Bea
 
 | Method | Path | Description |
 | --- | --- | --- |
-| GET | `/v1/beacon/status` | Health/status check |
-| GET | `/v1/beacon/resources` | List resources |
-| POST | `/v1/beacon/resources` | Create a resource |
-| DELETE | `/v1/beacon/resources/:id` | Delete a resource |
+| POST | `/v1/beacon/monitors` | Create a new uptime monitor |
+| GET | `/v1/beacon/incidents` | List open and resolved incidents |
+| POST | `/v1/beacon/status-pages` | Publish a public status page |
 
 ## Soporte
 

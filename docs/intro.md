@@ -23,5 +23,6 @@ Read the write-ups:
 - [Versioning strategy](./versioning-strategy.md) — per-product versioning without an all-or-nothing site
 - [Localization strategy](./i18n-strategy.md) — i18n approach for 8+ languages
 - [Performance](./performance.md) — what actually happened to build time at this scale, and how to keep it sane
+- [Why Docusaurus (not DITA, not another SSG)](./tooling-evaluation.md) — the tooling evaluation, including why "SaaS vs. hardware" isn't actually the deciding factor
 
 Or jump straight to the [product catalog](/products) to see it in action.

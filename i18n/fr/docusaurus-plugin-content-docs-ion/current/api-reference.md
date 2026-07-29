@@ -15,10 +15,9 @@ Le tableau ci-dessous liste les principaux points de terminaison exposés par l'
 
 | Method | Path | Description |
 | --- | --- | --- |
-| GET | `/v1/ion/status` | Health/status check |
-| GET | `/v1/ion/resources` | List resources |
-| POST | `/v1/ion/resources` | Create a resource |
-| DELETE | `/v1/ion/resources/:id` | Delete a resource |
+| POST | `/v1/ion/charges` | Create a one-time charge |
+| POST | `/v1/ion/subscriptions` | Create a subscription |
+| POST | `/v1/ion/refunds` | Issue a refund |
 
 ## Assistance
 
