@@ -37,7 +37,7 @@ management SaaS like [Crowdin](https://crowdin.com/)** rather than hand-editing 
 translation work out of your version control history and gives translators a proper UI, string diffing, and
 translation memory.
 
-For this demo (no live translation team), [`scripts/generate-content.mjs`](https://github.com/purcellconsult/docusaurus-enterprise-demo/blob/main/scripts/generate-content.mjs)
+For this demo (no live translation team), [`scripts/generate-content.mjs`](https://github.com/wordsnlogic/docusaurus-enterprise-demo/blob/main/scripts/generate-content.mjs)
 programmatically generates every product's docs from a small set of hand-translated phrase templates per
 language, substituting the product name in. It's a stand-in for a real translation pipeline, but it
 exercises the exact same file layout Crowdin (or any other pipeline) would produce — which is the point:

@@ -14,7 +14,7 @@ config — to optimize efficiency?"*
 
 This site is deliberately over-provisioned relative to what most teams need on day one — **15 products ×
 9 locales, with 2 products versioned** — specifically so the build numbers below are real, not projected.
-See [`BUILD_STATS.md`](https://github.com/purcellconsult/docusaurus-enterprise-demo/blob/main/BUILD_STATS.md)
+See [`BUILD_STATS.md`](https://github.com/wordsnlogic/docusaurus-enterprise-demo/blob/main/BUILD_STATS.md)
 for the exact numbers from the last full build in this repo, along with hardware/Node version context.
 
 The short version: this scale is comfortably within reach of a single Docusaurus build **because of two

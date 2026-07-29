@@ -23,7 +23,7 @@ plugin, each with its own:
 - `id` (required for every instance except the default one)
 
 This site registers one plugin instance per product line, generated from a single data file
-([`data/products.json`](https://github.com/purcellconsult/docusaurus-enterprise-demo/blob/main/data/products.json))
+([`data/products.json`](https://github.com/wordsnlogic/docusaurus-enterprise-demo/blob/main/data/products.json))
 instead of hand-writing 15 (or 100) near-identical config blocks:
 
 ```ts title="docusaurus.config.ts (excerpt)"

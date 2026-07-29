@@ -29,7 +29,7 @@ nvm install --lts
 ## Getting started
 
 ```bash
-git clone https://github.com/purcellconsult/docusaurus-enterprise-demo.git
+git clone https://github.com/wordsnlogic/docusaurus-enterprise-demo.git
 cd docusaurus-enterprise-demo
 npm install
 npm start

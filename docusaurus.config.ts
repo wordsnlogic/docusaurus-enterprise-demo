@@ -5,7 +5,7 @@ import products from './data/products.json';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
-const ORG_NAME = 'purcellconsult';
+const ORG_NAME = 'wordsnlogic';
 const PROJECT_NAME = 'docusaurus-enterprise-demo';
 
 // One @docusaurus/plugin-content-docs instance per product line.
