@@ -40,7 +40,7 @@ that scale:
   `faster` yet) turns a cold multi-minute build into a warm incremental one in CI when `node_modules/.cache`
   is preserved between runs.
 
-## Information architecture {#information-architecture}
+## Information architecture
 
 The core IA decision this site makes: **the navbar stays flat and small regardless of product count.**
 
