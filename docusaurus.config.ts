@@ -97,7 +97,12 @@ const config: Config = {
       '@easyops-cn/docusaurus-search-local',
       {
         hashed: true,
-        language: ['en', 'ko', 'de', 'fr', 'zh', 'ja', 'es', 'pt', 'it'],
+        // NOTE: 'ko' is intentionally excluded — lunr-languages' Korean trimmer
+        // (via @easyops-cn/docusaurus-search-local 0.55.2) throws "Lone quantifier
+        // brackets" when combined with other CJK languages in one index. Korean
+        // pages are still indexed and searchable, just without Hangul-aware
+        // word segmentation. Tracked as a known limitation, see docs/performance.md.
+        language: ['en', 'de', 'fr', 'zh', 'ja', 'es', 'pt', 'it'],
         indexDocs: true,
         indexBlog: true,
         indexPages: true,
