@@ -1,8 +1,3 @@
----
-title: Performance & information architecture
-sidebar_position: 5
----
-
 # Performance & information architecture
 
 ## The question
@@ -45,20 +40,23 @@ that scale:
 The core IA decision this site makes: **the navbar stays flat and small regardless of product count.**
 
 ```
-Navbar:  Platform Docs | Products | Release Notes | [language ▾] | GitHub
-                            │
-                            ▼
-                    /products  (generated catalog page, one card per product)
-                            │
-                            ▼
-                 /docs/<product>/intro  (that product's own docs, own sidebar)
+Navbar:  Products | Release Notes | [language ▾] | GitHub
+              │
+              ▼
+      /products  (generated catalog page, one card per product)
+              │
+              ▼
+   /docs/<product>/intro  (that product's own docs, own sidebar)
 ```
 
 A navbar dropdown with 15 (or 100) entries is a bad IA decision independent of Docusaurus — it doesn't
 scale for humans, regardless of whether it scales for the build. Two levels of navigation (`/products` →
 `/docs/<product>`) plus [full-text local search](https://github.com/easyops-cn/docusaurus-search-local)
-across every product, version, and locale is what actually stays usable at 15 or 100 products. See
-[`/products`](/products) and try the search box in the navbar.
+across every product, version, and locale is what actually stays usable at 15 or 100 products. See the live
+site's [`/products`](https://docusaurus-enterprise-demo.vercel.app/products) and try the search box in the
+navbar. Notice there's no "meta docs about the architecture" link in that navbar at all — this reasoning
+lives in the repo's `meta/` folder, not on the product site itself, because a real product site shouldn't
+expose its own architecture writeup to end users.
 
 ## Plugins used in this repo
 

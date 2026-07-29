@@ -1,8 +1,3 @@
----
-title: Versioning strategy
-sidebar_position: 3
----
-
 # Versioning strategy
 
 ## The question
@@ -18,8 +13,8 @@ all — all in the same deployment. That mirrors how real product teams actually
 
 This demo versions two products to prove that out:
 
-- **[Atlas](/docs/atlas/intro)** — versioned (`1.0.0` archived, current docs represent the next release)
-- **[Beacon](/docs/beacon/intro)** — versioned independently of Atlas
+- **[Atlas](https://docusaurus-enterprise-demo.vercel.app/docs/atlas/intro)** — versioned (`1.0.0` archived, current docs represent the next release)
+- **[Beacon](https://docusaurus-enterprise-demo.vercel.app/docs/beacon/intro)** — versioned independently of Atlas
 - The other 13 products are intentionally **unversioned** — most internal/early-stage products don't need
   version history from day one, and turning it on is a single CLI command per instance when they do:
 

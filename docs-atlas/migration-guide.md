@@ -13,6 +13,3 @@ snapshot reflects exactly what was true for that release, including which pages 
 
 - The `resources` endpoint now requires pagination parameters (`page`, `page_size`) on `GET` requests.
 - Authentication tokens issued under `1.0.0` remain valid; no re-auth is required.
-
-Deliberately **not translated yet** — per the [localization strategy](/docs/i18n-strategy), new pages get
-translated once they've shown real read traffic, not automatically on creation.

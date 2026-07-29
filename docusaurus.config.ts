@@ -11,7 +11,7 @@ const PROJECT_NAME = 'docusaurus-enterprise-demo';
 // One @docusaurus/plugin-content-docs instance per product line.
 // This is the pattern that lets a single site host N product doc sets,
 // each independently versioned, without one giant docs tree.
-// See docs/architecture for the write-up.
+// See meta/ARCHITECTURE.md for the write-up.
 const productDocsPlugins: Config['plugins'] = products.map((product) => [
   '@docusaurus/plugin-content-docs',
   {
@@ -66,12 +66,11 @@ const config: Config = {
     [
       'classic',
       {
-        docs: {
-          path: 'docs',
-          routeBasePath: 'docs',
-          sidebarPath: './sidebars.ts',
-          editUrl: `https://github.com/${ORG_NAME}/${PROJECT_NAME}/tree/main/`,
-        },
+        // No default docs instance — every product line is its own plugin
+        // instance (see productDocsPlugins below). The architecture/strategy
+        // write-ups behind this site live in the repo's meta/ folder, not on
+        // the live site itself.
+        docs: false,
         blog: {
           showReadingTime: true,
           blogTitle: 'Release notes',
@@ -105,12 +104,17 @@ const config: Config = {
         // (via @easyops-cn/docusaurus-search-local 0.55.2) throws "Lone quantifier
         // brackets" when combined with other CJK languages in one index. Korean
         // pages are still indexed and searchable, just without Hangul-aware
-        // word segmentation. Tracked as a known limitation, see docs/performance.md.
+        // word segmentation. Tracked as a known limitation, see meta/PERFORMANCE.md.
         language: ['en', 'de', 'fr', 'zh', 'ja', 'es', 'pt', 'it'],
         indexDocs: true,
         indexBlog: true,
         indexPages: true,
-        docsRouteBasePath: ['/docs', ...products.map((p) => `/docs/${p.id}`)],
+        docsRouteBasePath: products.map((p) => `/docs/${p.id}`),
+        // There is no "default" docs plugin instance in this site (see docs: false
+        // above) — without this, the search bar's version-awareness crashes on
+        // non-docs pages (e.g. the homepage) trying to look up a "default" plugin
+        // id that doesn't exist.
+        docsPluginIdForPreferredVersion: products[0].id,
       },
     ],
   ],
@@ -127,13 +131,6 @@ const config: Config = {
         src: 'img/logo.svg',
       },
       items: [
-        {
-          type: 'docSidebar',
-          docsPluginId: 'default',
-          sidebarId: 'tutorialSidebar',
-          position: 'left',
-          label: 'Platform Docs',
-        },
         {to: '/products', label: 'Products', position: 'left'},
         {to: '/blog', label: 'Release Notes', position: 'left'},
         {
@@ -150,16 +147,6 @@ const config: Config = {
     footer: {
       style: 'dark',
       links: [
-        {
-          title: 'Platform',
-          items: [
-            {label: 'Architecture', to: '/docs/architecture'},
-            {label: 'Versioning strategy', to: '/docs/versioning-strategy'},
-            {label: 'Localization strategy', to: '/docs/i18n-strategy'},
-            {label: 'Performance', to: '/docs/performance'},
-            {label: 'Why Docusaurus', to: '/docs/tooling-evaluation'},
-          ],
-        },
         {
           title: 'Products',
           items: [

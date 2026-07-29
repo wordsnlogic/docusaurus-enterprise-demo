@@ -1,8 +1,3 @@
----
-title: Why Docusaurus (not DITA, not another SSG)
-sidebar_position: 6
----
-
 # Why Docusaurus, and why not DITA/Oxygen or another static site generator
 
 Northwind Cloud is a pure-play SaaS company — no hardware division, no regulated physical products. That
@@ -31,7 +26,7 @@ PDF exports and role-filtered content, maintained by a large dedicated writing o
 
 Northwind Cloud's documentation problem looks different: **15 fairly independent API products**, each
 owned by its own engineering team, shipping continuously, with docs that are mostly self-contained per
-product (this site's own multi-instance-per-product architecture — see [Architecture](./architecture.md) —
+product (this repo's own multi-instance-per-product architecture — see [Architecture](./ARCHITECTURE.md) —
 is a direct reflection of that). Given that shape, the evaluation came out like this:
 
 | Criterion | DITA / Oxygen XML | Docusaurus |
@@ -57,7 +52,7 @@ Docusaurus wasn't the only static-site contender:
 - **Nextra / VuePress** — solid, but the specific combination this company needed — multi-instance docs
   *and* i18n *and* per-product versioning, all composing cleanly together — is more mature and better
   documented in Docusaurus than in either.
-- **Docusaurus** — open source, self-hostable, git-native, and (per [Performance](./performance.md)) fast
+- **Docusaurus** — open source, self-hostable, git-native, and (per [Performance](./PERFORMANCE.md)) fast
   enough at this scale with `@docusaurus/faster` that the build-time objection doesn't hold up.
 
 ## Why Vercel for hosting

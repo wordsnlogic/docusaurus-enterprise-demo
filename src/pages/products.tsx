@@ -12,12 +12,10 @@ export default function Products(): ReactNode {
       <main className="container margin-vert--lg">
         <Heading as="h1">Products</Heading>
         <p>
-          Every product below is served by its own docs plugin instance
-          (its own folder, sidebar, and — for Atlas and Beacon — its own
-          version history), generated from{' '}
-          <code>data/products.json</code>. Adding a 16th product is one more
-          entry in that file, not a redesign. See the{' '}
-          <Link to="/docs/architecture">architecture write-up</Link>.
+          Northwind Cloud is a suite of independent, composable APIs — pick
+          the ones you need and integrate only those. Browse each product's
+          documentation below, including versioned references where
+          applicable.
         </p>
         <div className="row margin-top--lg">
           {products.map((product: {id: string; name: string; tagline: string; versioned: boolean}) => (

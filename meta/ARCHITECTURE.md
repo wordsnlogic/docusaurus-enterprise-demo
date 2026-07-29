@@ -1,8 +1,3 @@
----
-title: Architecture — one site, many products
-sidebar_position: 2
----
-
 # Architecture: one site, many products
 
 ## The question
@@ -58,7 +53,7 @@ and ~2GB RAM** for a *selective* build of a single plugin:locale pair, using
 build scoping.
 
 This demo intentionally leans into that ceiling: **15 products × 9 locales × (3 current docs + versioned
-docs for 2 products) is 153 plugin/version × locale build units** — see [Performance](./performance.md) for
+docs for 2 products) is 153 plugin/version × locale build units** — see [Performance](./PERFORMANCE.md) for
 what that actually cost to build, and how selective/incremental builds fix it in CI.
 
 ## Practical strategy for ~100 products
@@ -70,6 +65,7 @@ what that actually cost to build, and how selective/incremental builds fix it in
    crammed into one build.
 4. **Use selective/incremental builds in CI**: rebuild only the plugin(s) whose source files changed, not
    the whole site, on every PR. Reserve full multi-locale builds for release/deploy pipelines.
-5. **Give every product a landing surface.** See [`/products`](/products) — a generated catalog page, not a
+5. **Give every product a landing surface.** See the live site's
+   [`/products`](https://docusaurus-enterprise-demo.vercel.app/products) — a generated catalog page, not a
    68-item navbar dropdown. Good IA at this scale means *searchable and browsable*, not *everything visible
-   at once* — see [Performance](./performance.md#information-architecture) for the full navbar/IA reasoning.
+   at once* — see [Performance](./PERFORMANCE.md#information-architecture) for the full navbar/IA reasoning.

@@ -40,7 +40,8 @@ Show the homepage. Point out the stat cards: 15 product lines, 9 locales, 2 vers
 
 ## 5. The performance question — the receipts (90s)
 
-- Cut to `/docs/performance` (or `BUILD_STATS.md` on screen).
+- Cut to `BUILD_STATS.md` or `meta/PERFORMANCE.md` on screen (in your editor or on GitHub) — this is
+  repo documentation, not a page on the live site.
 - "Here's what actually happened when I built this for real: 15 products times 9 locales times versioning
   is 153 build combinations. Full production build: **17.4 seconds**, 675 pages, on a laptop."
 - "The single biggest lever is `@docusaurus/faster` — Rspack instead of Webpack. It's a config flag, not an

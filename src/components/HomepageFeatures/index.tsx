@@ -9,6 +9,9 @@ type FeatureItem = {
   description: ReactNode;
 };
 
+const META_BASE =
+  'https://github.com/wordsnlogic/docusaurus-enterprise-demo/blob/main/meta';
+
 const FeatureList: FeatureItem[] = [
   {
     title: '15 product lines, 1 site',
@@ -17,7 +20,7 @@ const FeatureList: FeatureItem[] = [
       <>
         Each product is its own <code>@docusaurus/plugin-content-docs</code>{' '}
         instance, generated from a single data file. See{' '}
-        <a href="/docs/architecture">how it's architected</a>.
+        <a href={`${META_BASE}/ARCHITECTURE.md`}>how it's architected</a>.
       </>
     ),
   },
@@ -28,7 +31,7 @@ const FeatureList: FeatureItem[] = [
       <>
         English + 8 languages, with Atlas and Beacon independently versioned
         to prove versioning and localization compose. See the{' '}
-        <a href="/docs/i18n-strategy">localization strategy</a>.
+        <a href={`${META_BASE}/I18N_STRATEGY.md`}>localization strategy</a>.
       </>
     ),
   },
@@ -39,7 +42,7 @@ const FeatureList: FeatureItem[] = [
       <>
         This is a real stress test, not a mockup — read what actually
         happened to build time at this scale in{' '}
-        <a href="/docs/performance">Performance</a>.
+        <a href={`${META_BASE}/PERFORMANCE.md`}>Performance</a>.
       </>
     ),
   },

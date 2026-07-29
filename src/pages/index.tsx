@@ -20,13 +20,13 @@ function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg margin-right--md"
-            to="/docs/architecture">
-            Read the architecture
+            to="/products">
+            Browse all products
           </Link>
           <Link
             className="button button--secondary button--lg"
-            to="/products">
-            Browse all products
+            href="https://github.com/wordsnlogic/docusaurus-enterprise-demo">
+            View source on GitHub
           </Link>
         </div>
       </div>

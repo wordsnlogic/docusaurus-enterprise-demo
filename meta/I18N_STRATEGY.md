@@ -1,8 +1,3 @@
----
-title: Localization strategy
-sidebar_position: 4
----
-
 # Localization strategy
 
 ## The question
@@ -48,7 +43,7 @@ exercises the exact same file layout Crowdin (or any other pipeline) would produ
 1. **Translate what's read.** Most traffic concentrates on `intro` and `getting-started` pages, not every
    API reference page in every language on day one. Prioritize by page views, not by completeness.
 2. **Localize the current version only, by default.** Versioned + localized is a real multiplier (see
-   [Versioning strategy](./versioning-strategy.md#versioning--localization)) — don't retranslate archived
+   [Versioning strategy](./VERSIONING_STRATEGY.md#versioning--localization)) — don't retranslate archived
    versions unless there's demonstrated demand.
 3. **Deploy locales independently in CI** rather than rebuilding all 9 on every change — Docusaurus's
    per-locale SPA design supports this natively.
