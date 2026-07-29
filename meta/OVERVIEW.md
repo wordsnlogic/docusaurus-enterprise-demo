@@ -19,6 +19,7 @@ Read the write-ups:
 - [Localization strategy](./I18N_STRATEGY.md) — i18n approach for 8+ languages
 - [Performance](./PERFORMANCE.md) — what actually happened to build time at this scale, and how to keep it sane
 - [Why Docusaurus (not DITA, not another SSG)](./TOOLING_EVALUATION.md) — the tooling evaluation, including why "SaaS vs. hardware" isn't actually the deciding factor
+- [AI readiness](./AI_READINESS.md) — llms.txt, robots.txt, and how we verified it (including two real bugs verification caught)
 
 Or see the live site's [product catalog](https://docusaurus-enterprise-demo.vercel.app/products) to see it
 in action.

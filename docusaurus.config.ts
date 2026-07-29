@@ -97,6 +97,29 @@ const config: Config = {
   plugins: [
     ...productDocsPlugins,
     [
+      'docusaurus-plugin-llms',
+      {
+        title: 'Northwind Cloud Docs',
+        description:
+          'API documentation for the Northwind Cloud platform: 15 product lines.',
+        // English source only — mirrors productDocsPlugins above. Generating
+        // llms.txt per-locale would multiply this 9x for no real benefit;
+        // see meta/I18N_STRATEGY.md's "translate what's read" reasoning.
+        docsDir: products.map((product) => ({
+          path: `docs-${product.id}`,
+          routeBasePath: `docs/${product.id}`,
+          label: product.name,
+        })),
+        includeBlog: true,
+        generateMarkdownFiles: true,
+        excludeImports: true,
+        removeDuplicateHeadings: true,
+        pathTransformation: {
+          ignorePaths: products.map((product) => `docs-${product.id}`),
+        },
+      },
+    ],
+    [
       '@easyops-cn/docusaurus-search-local',
       {
         hashed: true,

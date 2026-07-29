@@ -1,0 +1,28 @@
+# Northwind Cloud Docs is public API documentation — we want it crawled,
+# read, and cited by both search engines and AI agents/assistants.
+# See meta/AI_READINESS.md for the reasoning and how this is verified.
+
+User-agent: *
+Allow: /
+
+# Known AI crawlers/agents, allowed explicitly rather than left to the
+# catch-all above, so the intent is unambiguous and easy to audit/update.
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+Sitemap: https://docusaurus-enterprise-demo.vercel.app/sitemap.xml
