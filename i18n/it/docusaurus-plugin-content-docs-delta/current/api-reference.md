@@ -1,0 +1,25 @@
+---
+title: Riferimento API
+sidebar_position: 3
+---
+
+# Riferimento API
+
+## Autenticazione
+
+Tutte le richieste all'API di Delta devono includere un token bearer valido nell'header Authorization.
+
+## Endpoint
+
+La tabella seguente elenca i principali endpoint esposti dall'API di Delta.
+
+| Method | Path | Description |
+| --- | --- | --- |
+| GET | `/v1/delta/status` | Health/status check |
+| GET | `/v1/delta/resources` | List resources |
+| POST | `/v1/delta/resources` | Create a resource |
+| DELETE | `/v1/delta/resources/:id` | Delete a resource |
+
+## Supporto
+
+Per domande su Delta, contatta il team di prodotto o visita il forum della community.

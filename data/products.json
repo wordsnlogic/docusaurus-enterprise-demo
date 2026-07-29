@@ -1,0 +1,17 @@
+[
+  { "id": "atlas", "name": "Atlas", "tagline": "Product analytics and event tracking", "versioned": true },
+  { "id": "beacon", "name": "Beacon", "tagline": "Uptime monitoring and alerting", "versioned": true },
+  { "id": "cascade", "name": "Cascade", "tagline": "Managed data pipelines and ETL", "versioned": false },
+  { "id": "delta", "name": "Delta", "tagline": "Real-time data sync across services", "versioned": false },
+  { "id": "echo", "name": "Echo", "tagline": "Programmable chat and messaging API", "versioned": false },
+  { "id": "falcon", "name": "Falcon", "tagline": "Hosted full-text and vector search", "versioned": false },
+  { "id": "genesis", "name": "Genesis", "tagline": "Identity, auth, and SSO platform", "versioned": false },
+  { "id": "horizon", "name": "Horizon", "tagline": "Embeddable dashboards and BI", "versioned": false },
+  { "id": "ion", "name": "Ion", "tagline": "Global payments and billing", "versioned": false },
+  { "id": "juno", "name": "Juno", "tagline": "Distributed job scheduling", "versioned": false },
+  { "id": "kepler", "name": "Kepler", "tagline": "Geospatial and mapping APIs", "versioned": false },
+  { "id": "lumen", "name": "Lumen", "tagline": "Transactional email, SMS, and push", "versioned": false },
+  { "id": "meridian", "name": "Meridian", "tagline": "Workflow automation engine", "versioned": false },
+  { "id": "nova", "name": "Nova", "tagline": "Managed ML model hosting", "versioned": false },
+  { "id": "orion", "name": "Orion", "tagline": "Object storage and CDN", "versioned": false }
+]
