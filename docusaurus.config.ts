@@ -87,9 +87,9 @@ const config: Config = {
         theme: {
           customCss: './src/css/custom.css',
         },
-        sitemap: {
-          lastmod: 'date',
-        },
+        // No `sitemap: { lastmod: 'date' }` — it reads git history, which
+        // isn't available on `vercel --prod` CLI deploys (only file uploads,
+        // no .git), so it breaks there even though it works locally.
       } satisfies Preset.Options,
     ],
   ],
