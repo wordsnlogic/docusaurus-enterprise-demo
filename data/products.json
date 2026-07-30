@@ -131,7 +131,7 @@
     "id": "ion",
     "name": "Ion",
     "tagline": "Global payments and billing",
-    "versioned": false,
+    "versioned": true,
     "keyFeatures": [
       "135+ currencies and local payment methods",
       "PCI-DSS Level 1 compliant card vaulting",

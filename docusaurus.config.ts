@@ -174,8 +174,8 @@ const config: Config = {
           title: 'Products',
           items: [
             {label: 'All products', to: '/products'},
-            {label: 'Atlas (versioned)', to: '/docs/atlas/intro'},
-            {label: 'Beacon (versioned)', to: '/docs/beacon/intro'},
+            {label: 'Atlas', to: '/docs/atlas/intro'},
+            {label: 'Beacon', to: '/docs/beacon/intro'},
           ],
         },
         {

@@ -14,11 +14,10 @@ export default function Products(): ReactNode {
         <p>
           Northwind Cloud is a suite of independent, composable APIs — pick
           the ones you need and integrate only those. Browse each product's
-          documentation below, including versioned references where
-          applicable.
+          documentation below.
         </p>
         <div className="row margin-top--lg">
-          {products.map((product: {id: string; name: string; tagline: string; versioned: boolean}) => (
+          {products.map((product: {id: string; name: string; tagline: string}) => (
             <div key={product.id} className="col col--4 margin-bottom--lg">
               <div className="card">
                 <div className="card__header">
@@ -26,9 +25,6 @@ export default function Products(): ReactNode {
                 </div>
                 <div className="card__body">
                   <p>{product.tagline}</p>
-                  {product.versioned && (
-                    <span className="badge badge--secondary">versioned</span>
-                  )}
                 </div>
                 <div className="card__footer">
                   <Link

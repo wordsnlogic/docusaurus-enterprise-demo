@@ -8,14 +8,13 @@ type Product = {
   id: string;
   name: string;
   tagline: string;
-  versioned: boolean;
 };
 
 // Hand-picked flagships for the homepage — the full catalog lives at /products.
 const FEATURED_IDS = ['atlas', 'ion', 'genesis'];
 const featured = (allProducts as Product[]).filter((p) => FEATURED_IDS.includes(p.id));
 
-function ProductCard({id, name, tagline, versioned}: Product) {
+function ProductCard({id, name, tagline}: Product) {
   return (
     <div className="col col--4 margin-bottom--lg">
       <div className="card">
@@ -24,7 +23,6 @@ function ProductCard({id, name, tagline, versioned}: Product) {
         </div>
         <div className="card__body">
           <p>{tagline}</p>
-          {versioned && <span className="badge badge--secondary">versioned</span>}
         </div>
         <div className="card__footer">
           <Link className="button button--primary button--block" to={`/docs/${id}/intro`}>

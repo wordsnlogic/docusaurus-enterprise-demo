@@ -101,20 +101,28 @@ order of effort-to-impact for an API-docs site like this one:
 ## How we verified it — and what that verification actually caught
 
 **We did not just install the plugin and assume it worked.** We ran a real build and read the generated
-output, and that caught two genuine bugs:
+output, and that caught three genuine bugs:
 
 1. **Doubled path segments.** The plugin's default URL construction produced broken links like
    `/docs/beacon/docs-beacon/api-reference.md` (the source folder name leaking into the route). Fixed via
    the `pathTransformation.ignorePaths` option once we could see the bad output.
-2. **Versioned-docs route mismatches.** For Atlas and Beacon specifically (the two versioned products),
-   generated links do not correctly resolve to the `/next/` route for current/unreleased content — and for
-   Atlas, some links resolve to an entirely unrelated product (`/docs/ion/...`) instead. This appears to be
-   an upstream limitation in how the plugin's route-matching handles Docusaurus's versioned-docs routing
-   combined with multi-instance plugins — a combination that's plausibly never been tested together before,
-   since each piece (multi-instance, versioning, llms.txt generation) is a relatively niche feature on its
-   own. **We're documenting this rather than silently shipping it**, and it did not block deploying — 13 of
-   15 products resolve correctly, and this is exactly the kind of thing you only find by actually generating
-   the output and reading it, not by reading the plugin's README and assuming it works.
+2. **`llms.txt` link route mismatches.** For versioned products, generated links in `llms.txt` don't
+   correctly resolve to the `/next/` route for current content — and for Atlas specifically, some links
+   resolve to an entirely unrelated product (`/docs/ion/...`) instead. This is an upstream limitation in
+   how the plugin's route-matching handles versioned + multi-instance docs together — a combination that's
+   plausibly never been exercised before, since each piece (multi-instance, versioning, `llms.txt`
+   generation) is individually niche. **Left as a documented, known limitation** — it doesn't block
+   deploying, and most products resolve correctly.
+3. **Per-page markdown file collisions (`generateMarkdownFiles`), for versioned products only.** Worse
+   than #2: the plugin wrote colliding filenames (`intro.md`, `intro-2.md`, ...) into the same flat output
+   directory for a product's multiple versions, and in Atlas's case, `intro.md` contained a *different
+   product's* content entirely. Verified by literally reading the generated files side by side, not by
+   assuming the config option worked because the log line said "Generating individual markdown files...".
+   **This one we fixed**, since a 404 or wrong-content `.md` file is worse than not offering one at all:
+   [`scripts/fix-versioned-docs-markdown.mjs`](https://github.com/wordsnlogic/docusaurus-enterprise-demo/blob/main/scripts/fix-versioned-docs-markdown.mjs)
+   runs as a `postbuild` step and regenerates the correct per-page markdown directly from the known source
+   directories (current docs, each cut version, each locale), sidestepping the plugin's internal routing
+   entirely rather than trying to debug its cache/state handling.
 
 That's the core lesson for verification: **read the generated `llms.txt`/`llms-full.txt` by hand after every
 change that touches routing.** An automated check can confirm the files exist and are non-empty; it won't
