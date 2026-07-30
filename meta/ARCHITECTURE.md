@@ -66,6 +66,6 @@ what that actually cost to build, and how selective/incremental builds fix it in
 4. **Use selective/incremental builds in CI**: rebuild only the plugin(s) whose source files changed, not
    the whole site, on every PR. Reserve full multi-locale builds for release/deploy pipelines.
 5. **Give every product a landing surface.** See the live site's
-   [`/products`](https://docusaurus-enterprise-demo.vercel.app/products) — a generated catalog page, not a
+   [`/products`](https://northwind-cloud.vercel.app/products) — a generated catalog page, not a
    68-item navbar dropdown. Good IA at this scale means *searchable and browsable*, not *everything visible
    at once* — see [Performance](./PERFORMANCE.md#information-architecture) for the full navbar/IA reasoning.

@@ -33,7 +33,7 @@ const config: Config = {
     faster: true,
   },
 
-  url: 'https://docusaurus-enterprise-demo.vercel.app',
+  url: 'https://northwind-cloud.vercel.app',
   baseUrl: '/',
 
   organizationName: ORG_NAME,

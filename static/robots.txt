@@ -25,4 +25,4 @@ Allow: /
 User-agent: CCBot
 Allow: /
 
-Sitemap: https://docusaurus-enterprise-demo.vercel.app/sitemap.xml
+Sitemap: https://northwind-cloud.vercel.app/sitemap.xml
