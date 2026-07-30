@@ -71,19 +71,11 @@ const config: Config = {
         // write-ups behind this site live in the repo's meta/ folder, not on
         // the live site itself.
         docs: false,
-        blog: {
-          showReadingTime: true,
-          blogTitle: 'Release notes',
-          blogDescription: 'Cross-product release notes for the Northwind Cloud platform',
-          feedOptions: {
-            type: ['rss', 'atom'],
-            xslt: true,
-          },
-          editUrl: `https://github.com/${ORG_NAME}/${PROJECT_NAME}/tree/main/`,
-          onInlineTags: 'warn',
-          onInlineAuthors: 'warn',
-          onUntruncatedBlogPosts: 'warn',
-        },
+        // No blog — the scaffolded template only ever had Docusaurus's own
+        // stock tutorial posts, not real Northwind Cloud release notes, so
+        // it was just a dead link to nothing real. Add it back once there's
+        // genuine release-notes content to publish.
+        blog: false,
         theme: {
           customCss: './src/css/custom.css',
         },
@@ -110,7 +102,6 @@ const config: Config = {
           routeBasePath: `docs/${product.id}`,
           label: product.name,
         })),
-        includeBlog: true,
         generateMarkdownFiles: true,
         excludeImports: true,
         removeDuplicateHeadings: true,
@@ -130,7 +121,7 @@ const config: Config = {
         // word segmentation. Tracked as a known limitation, see meta/PERFORMANCE.md.
         language: ['en', 'de', 'fr', 'zh', 'ja', 'es', 'pt', 'it'],
         indexDocs: true,
-        indexBlog: true,
+        indexBlog: false,
         indexPages: true,
         docsRouteBasePath: products.map((p) => `/docs/${p.id}`),
         // There is no "default" docs plugin instance in this site (see docs: false
@@ -155,7 +146,9 @@ const config: Config = {
       },
       items: [
         {to: '/products', label: 'Products', position: 'left'},
-        {to: '/blog', label: 'Release Notes', position: 'left'},
+        // Only renders when browsing a versioned product's own docs — see
+        // src/components/SmartVersionDropdownNavbarItem.
+        {type: 'custom-smartVersionDropdown', position: 'right'},
         {
           type: 'localeDropdown',
           position: 'right',
@@ -181,8 +174,8 @@ const config: Config = {
         {
           title: 'More',
           items: [
-            {label: 'Release notes', to: '/blog'},
             {label: 'GitHub', href: `https://github.com/${ORG_NAME}/${PROJECT_NAME}`},
+            {label: 'llms.txt', href: 'https://northwind-cloud.vercel.app/llms.txt'},
           ],
         },
       ],

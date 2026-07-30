@@ -1,0 +1,30 @@
+{
+  "link.title.Products": {
+    "message": "Produkte",
+    "description": "The title of the footer links column with title=Products in the footer"
+  },
+  "link.title.More": {
+    "message": "Weitere",
+    "description": "The title of the footer links column with title=More in the footer"
+  },
+  "link.item.label.All products": {
+    "message": "Alle Produkte",
+    "description": "The label of footer link with label=All products linking to /products"
+  },
+  "link.item.label.Atlas": {
+    "message": "Atlas",
+    "description": "The label of footer link with label=Atlas linking to /docs/atlas/intro"
+  },
+  "link.item.label.Beacon": {
+    "message": "Beacon",
+    "description": "The label of footer link with label=Beacon linking to /docs/beacon/intro"
+  },
+  "link.item.label.GitHub": {
+    "message": "GitHub",
+    "description": "The label of footer link with label=GitHub linking to https://github.com/wordsnlogic/docusaurus-enterprise-demo"
+  },
+  "copyright": {
+    "message": "Copyright © 2026 Northwind Cloud (Demoprojekt). Erstellt mit Docusaurus.",
+    "description": "The footer copyright"
+  }
+}

@@ -24,15 +24,8 @@ function HomepageHeader() {
           own release cycle.
         </p>
         <div className={styles.buttons}>
-          <Link
-            className="button button--secondary button--lg margin-right--md"
-            to="/products">
+          <Link className="button button--secondary button--lg" to="/products">
             Browse all products
-          </Link>
-          <Link
-            className="button button--secondary button--lg"
-            to="/blog">
-            Release notes
           </Link>
         </div>
       </div>

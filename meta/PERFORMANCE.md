@@ -40,7 +40,7 @@ that scale:
 The core IA decision this site makes: **the navbar stays flat and small regardless of product count.**
 
 ```
-Navbar:  Products | Release Notes | [language ▾] | GitHub
+Navbar:  Products | [language ▾] | GitHub
               │
               ▼
       /products  (generated catalog page, one card per product)
