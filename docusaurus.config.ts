@@ -24,8 +24,8 @@ const productDocsPlugins: Config['plugins'] = products.map((product) => [
 ]);
 
 const config: Config = {
-  title: 'Northwind Cloud Docs',
-  tagline: 'One documentation platform for 15 product lines, 9 languages, and counting',
+  title: 'Northwind Cloud',
+  tagline: 'Composable cloud APIs for analytics, payments, identity, and more',
   favicon: 'img/favicon.svg',
 
   future: {

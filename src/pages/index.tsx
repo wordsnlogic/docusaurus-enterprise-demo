@@ -17,6 +17,12 @@ function HomepageHeader() {
           {siteConfig.title}
         </Heading>
         <p className="hero__subtitle">{siteConfig.tagline}</p>
+        <p className={styles.heroDescription}>
+          Northwind Cloud is a suite of 15 independent, composable APIs — analytics, payments,
+          identity, search, messaging, and more — that teams mix and match to build their
+          products. Pick the ones you need; each is documented, versioned, and supported on its
+          own release cycle.
+        </p>
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg margin-right--md"
@@ -25,8 +31,8 @@ function HomepageHeader() {
           </Link>
           <Link
             className="button button--secondary button--lg"
-            href="https://github.com/wordsnlogic/docusaurus-enterprise-demo">
-            View source on GitHub
+            to="/blog">
+            Release notes
           </Link>
         </div>
       </div>
@@ -39,7 +45,7 @@ export default function Home(): ReactNode {
   return (
     <Layout
       title={siteConfig.title}
-      description="A live Docusaurus demo: 15 product lines, 9 languages, and per-product versioning in one deployment.">
+      description="Northwind Cloud: composable APIs for analytics, payments, identity, and more.">
       <HomepageHeader />
       <main>
         <HomepageFeatures />

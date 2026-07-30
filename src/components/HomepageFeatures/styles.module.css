@@ -1,18 +1,4 @@
 .features {
-  display: flex;
-  align-items: center;
-  padding: 2rem 0;
+  padding: 2rem 0 3rem;
   width: 100%;
-}
-
-.featureIcon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 88px;
-  height: 88px;
-  border-radius: 20px;
-  background: var(--ifm-color-primary);
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
 }

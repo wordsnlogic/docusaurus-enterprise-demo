@@ -1,64 +1,36 @@
 import type {ReactNode} from 'react';
-import clsx from 'clsx';
+import Link from '@docusaurus/Link';
 import Heading from '@theme/Heading';
+import allProducts from '@site/data/products.json';
 import styles from './styles.module.css';
 
-type FeatureItem = {
-  title: string;
-  icon: string;
-  description: ReactNode;
+type Product = {
+  id: string;
+  name: string;
+  tagline: string;
+  versioned: boolean;
 };
 
-const META_BASE =
-  'https://github.com/wordsnlogic/docusaurus-enterprise-demo/blob/main/meta';
+// Hand-picked flagships for the homepage — the full catalog lives at /products.
+const FEATURED_IDS = ['atlas', 'ion', 'genesis'];
+const featured = (allProducts as Product[]).filter((p) => FEATURED_IDS.includes(p.id));
 
-const FeatureList: FeatureItem[] = [
-  {
-    title: '15 product lines, 1 site',
-    icon: '\u{1F4E6}',
-    description: (
-      <>
-        Each product is its own <code>@docusaurus/plugin-content-docs</code>{' '}
-        instance, generated from a single data file. See{' '}
-        <a href={`${META_BASE}/ARCHITECTURE.md`}>how it's architected</a>.
-      </>
-    ),
-  },
-  {
-    title: '9 locales, 2 versioned products',
-    icon: '\u{1F310}',
-    description: (
-      <>
-        English + 8 languages, with Atlas and Beacon independently versioned
-        to prove versioning and localization compose. See the{' '}
-        <a href={`${META_BASE}/I18N_STRATEGY.md`}>localization strategy</a>.
-      </>
-    ),
-  },
-  {
-    title: 'Built for scale, honestly',
-    icon: '⚡',
-    description: (
-      <>
-        This is a real stress test, not a mockup — read what actually
-        happened to build time at this scale in{' '}
-        <a href={`${META_BASE}/PERFORMANCE.md`}>Performance</a>.
-      </>
-    ),
-  },
-];
-
-function Feature({title, icon, description}: FeatureItem) {
+function ProductCard({id, name, tagline, versioned}: Product) {
   return (
-    <div className={clsx('col col--4')}>
-      <div className="text--center">
-        <div className={styles.featureIcon} aria-hidden="true">
-          {icon}
+    <div className="col col--4 margin-bottom--lg">
+      <div className="card">
+        <div className="card__header">
+          <Heading as="h3">{name}</Heading>
         </div>
-      </div>
-      <div className="text--center padding-horiz--md">
-        <Heading as="h3">{title}</Heading>
-        <p>{description}</p>
+        <div className="card__body">
+          <p>{tagline}</p>
+          {versioned && <span className="badge badge--secondary">versioned</span>}
+        </div>
+        <div className="card__footer">
+          <Link className="button button--primary button--block" to={`/docs/${id}/intro`}>
+            View docs
+          </Link>
+        </div>
       </div>
     </div>
   );
@@ -68,10 +40,16 @@ export default function HomepageFeatures(): ReactNode {
   return (
     <section className={styles.features}>
       <div className="container">
+        <Heading as="h2" className="text--center margin-bottom--lg">
+          Popular products
+        </Heading>
         <div className="row">
-          {FeatureList.map((props, idx) => (
-            <Feature key={idx} {...props} />
+          {featured.map((product) => (
+            <ProductCard key={product.id} {...product} />
           ))}
+        </div>
+        <div className="text--center margin-top--md">
+          <Link to="/products">View all {allProducts.length} products →</Link>
         </div>
       </div>
     </section>
