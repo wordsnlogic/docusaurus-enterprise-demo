@@ -5,6 +5,7 @@
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
+    "prebuild": "node scripts/generate-llms-index.mjs",
     "build": "docusaurus build",
     "postbuild": "node scripts/fix-versioned-docs-markdown.mjs",
     "swizzle": "docusaurus swizzle",

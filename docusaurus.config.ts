@@ -91,12 +91,15 @@ const config: Config = {
     [
       'docusaurus-plugin-llms',
       {
-        title: 'Northwind Cloud Docs',
-        description:
-          'API documentation for the Northwind Cloud platform: 15 product lines.',
-        // English source only — mirrors productDocsPlugins above. Generating
-        // llms.txt per-locale would multiply this 9x for no real benefit;
-        // see meta/I18N_STRATEGY.md's "translate what's read" reasoning.
+        // llms.txt / llms-full.txt generation is OFF here — its route-matching
+        // produced wrong cross-product links, truncated summaries, and pulled
+        // the (now-removed) blog into the index. Replaced by our own generator:
+        // scripts/generate-llms-index.mjs (runs pre-build), see meta/AI_READINESS.md.
+        generateLLMsTxt: false,
+        generateLLMsFullTxt: false,
+        // Per-page markdown generation is kept — it's correct for the 11
+        // unversioned products; scripts/fix-versioned-docs-markdown.mjs
+        // (post-build) corrects it for the 4 versioned ones.
         docsDir: products.map((product) => ({
           path: `docs-${product.id}`,
           routeBasePath: `docs/${product.id}`,

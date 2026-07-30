@@ -1,0 +1,129 @@
+# Northwind Cloud Docs
+
+> Reference documentation for Northwind Cloud's 15 cloud products. Each section below
+> links to that product's introduction, core concepts, getting-started guide, and API reference.
+
+## Atlas
+
+Product analytics and event tracking.
+
+- [Introduction](https://northwind-cloud.vercel.app/docs/atlas/intro.md): Product analytics and event tracking.
+- [Concepts](https://northwind-cloud.vercel.app/docs/atlas/concepts.md): Core objects and data model behind Atlas — the concepts referenced throughout the rest of the docs.
+- [Getting Started](https://northwind-cloud.vercel.app/docs/atlas/getting-started.md): Create an API key, install the SDK or use cURL directly, and send your first request.
+- [API Reference](https://northwind-cloud.vercel.app/docs/atlas/api-reference.md): Full REST endpoint reference for Atlas: requests, responses, authentication, and error codes.
+- [Migration Guide](https://northwind-cloud.vercel.app/docs/atlas/next/migration-guide.md): What changed for Atlas between the previous release and the current one.
+
+## Beacon
+
+Uptime monitoring and alerting.
+
+- [Introduction](https://northwind-cloud.vercel.app/docs/beacon/intro.md): Uptime monitoring and alerting.
+- [Getting Started](https://northwind-cloud.vercel.app/docs/beacon/getting-started.md): Create an API key, install the SDK or use cURL directly, and send your first request.
+- [API Reference](https://northwind-cloud.vercel.app/docs/beacon/api-reference.md): Full REST endpoint reference for Beacon: requests, responses, authentication, and error codes.
+
+## Cascade
+
+Managed data pipelines and ETL.
+
+- [Introduction](https://northwind-cloud.vercel.app/docs/cascade/intro.md): Managed data pipelines and ETL.
+- [Getting Started](https://northwind-cloud.vercel.app/docs/cascade/getting-started.md): Create an API key, install the SDK or use cURL directly, and send your first request.
+- [API Reference](https://northwind-cloud.vercel.app/docs/cascade/api-reference.md): Full REST endpoint reference for Cascade: requests, responses, authentication, and error codes.
+
+## Delta
+
+Real-time data sync across services.
+
+- [Introduction](https://northwind-cloud.vercel.app/docs/delta/intro.md): Real-time data sync across services.
+- [Getting Started](https://northwind-cloud.vercel.app/docs/delta/getting-started.md): Create an API key, install the SDK or use cURL directly, and send your first request.
+- [API Reference](https://northwind-cloud.vercel.app/docs/delta/api-reference.md): Full REST endpoint reference for Delta: requests, responses, authentication, and error codes.
+
+## Echo
+
+Programmable chat and messaging API.
+
+- [Introduction](https://northwind-cloud.vercel.app/docs/echo/intro.md): Programmable chat and messaging API.
+- [Getting Started](https://northwind-cloud.vercel.app/docs/echo/getting-started.md): Create an API key, install the SDK or use cURL directly, and send your first request.
+- [API Reference](https://northwind-cloud.vercel.app/docs/echo/api-reference.md): Full REST endpoint reference for Echo: requests, responses, authentication, and error codes.
+
+## Falcon
+
+Hosted full-text and vector search.
+
+- [Introduction](https://northwind-cloud.vercel.app/docs/falcon/intro.md): Hosted full-text and vector search.
+- [Getting Started](https://northwind-cloud.vercel.app/docs/falcon/getting-started.md): Create an API key, install the SDK or use cURL directly, and send your first request.
+- [API Reference](https://northwind-cloud.vercel.app/docs/falcon/api-reference.md): Full REST endpoint reference for Falcon: requests, responses, authentication, and error codes.
+
+## Genesis
+
+Identity, auth, and SSO platform.
+
+- [Introduction](https://northwind-cloud.vercel.app/docs/genesis/intro.md): Identity, auth, and SSO platform.
+- [Concepts](https://northwind-cloud.vercel.app/docs/genesis/concepts.md): Core objects and data model behind Genesis — the concepts referenced throughout the rest of the docs.
+- [Getting Started](https://northwind-cloud.vercel.app/docs/genesis/getting-started.md): Create an API key, install the SDK or use cURL directly, and send your first request.
+- [API Reference](https://northwind-cloud.vercel.app/docs/genesis/api-reference.md): Full REST endpoint reference for Genesis: requests, responses, authentication, and error codes.
+
+## Horizon
+
+Embeddable dashboards and BI.
+
+- [Introduction](https://northwind-cloud.vercel.app/docs/horizon/intro.md): Embeddable dashboards and BI.
+- [Getting Started](https://northwind-cloud.vercel.app/docs/horizon/getting-started.md): Create an API key, install the SDK or use cURL directly, and send your first request.
+- [API Reference](https://northwind-cloud.vercel.app/docs/horizon/api-reference.md): Full REST endpoint reference for Horizon: requests, responses, authentication, and error codes.
+
+## Ion
+
+Global payments and billing.
+
+- [Introduction](https://northwind-cloud.vercel.app/docs/ion/intro.md): Global payments and billing.
+- [Concepts](https://northwind-cloud.vercel.app/docs/ion/concepts.md): Core objects and data model behind Ion — the concepts referenced throughout the rest of the docs.
+- [Getting Started](https://northwind-cloud.vercel.app/docs/ion/getting-started.md): Create an API key, install the SDK or use cURL directly, and send your first request.
+- [API Reference](https://northwind-cloud.vercel.app/docs/ion/api-reference.md): Full REST endpoint reference for Ion: requests, responses, authentication, and error codes.
+
+## Juno
+
+Distributed job scheduling.
+
+- [Introduction](https://northwind-cloud.vercel.app/docs/juno/intro.md): Distributed job scheduling.
+- [Getting Started](https://northwind-cloud.vercel.app/docs/juno/getting-started.md): Create an API key, install the SDK or use cURL directly, and send your first request.
+- [API Reference](https://northwind-cloud.vercel.app/docs/juno/api-reference.md): Full REST endpoint reference for Juno: requests, responses, authentication, and error codes.
+
+## Kepler
+
+Geospatial and mapping APIs.
+
+- [Introduction](https://northwind-cloud.vercel.app/docs/kepler/intro.md): Geospatial and mapping APIs.
+- [Getting Started](https://northwind-cloud.vercel.app/docs/kepler/getting-started.md): Create an API key, install the SDK or use cURL directly, and send your first request.
+- [API Reference](https://northwind-cloud.vercel.app/docs/kepler/api-reference.md): Full REST endpoint reference for Kepler: requests, responses, authentication, and error codes.
+
+## Lumen
+
+Transactional email, SMS, and push.
+
+- [Introduction](https://northwind-cloud.vercel.app/docs/lumen/intro.md): Transactional email, SMS, and push.
+- [Getting Started](https://northwind-cloud.vercel.app/docs/lumen/getting-started.md): Create an API key, install the SDK or use cURL directly, and send your first request.
+- [API Reference](https://northwind-cloud.vercel.app/docs/lumen/api-reference.md): Full REST endpoint reference for Lumen: requests, responses, authentication, and error codes.
+
+## Meridian
+
+Workflow automation engine.
+
+- [Introduction](https://northwind-cloud.vercel.app/docs/meridian/intro.md): Workflow automation engine.
+- [Getting Started](https://northwind-cloud.vercel.app/docs/meridian/getting-started.md): Create an API key, install the SDK or use cURL directly, and send your first request.
+- [API Reference](https://northwind-cloud.vercel.app/docs/meridian/api-reference.md): Full REST endpoint reference for Meridian: requests, responses, authentication, and error codes.
+
+## Nova
+
+Managed ML model hosting.
+
+- [Introduction](https://northwind-cloud.vercel.app/docs/nova/intro.md): Managed ML model hosting.
+- [Getting Started](https://northwind-cloud.vercel.app/docs/nova/getting-started.md): Create an API key, install the SDK or use cURL directly, and send your first request.
+- [API Reference](https://northwind-cloud.vercel.app/docs/nova/api-reference.md): Full REST endpoint reference for Nova: requests, responses, authentication, and error codes.
+
+## Orion
+
+Object storage and CDN.
+
+- [Introduction](https://northwind-cloud.vercel.app/docs/orion/intro.md): Object storage and CDN.
+- [Getting Started](https://northwind-cloud.vercel.app/docs/orion/getting-started.md): Create an API key, install the SDK or use cURL directly, and send your first request.
+- [API Reference](https://northwind-cloud.vercel.app/docs/orion/api-reference.md): Full REST endpoint reference for Orion: requests, responses, authentication, and error codes.
+

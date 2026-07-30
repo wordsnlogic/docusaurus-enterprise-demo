@@ -1,0 +1,1704 @@
+# Northwind Cloud Docs — Full Reference
+
+> Complete content for all 15 Northwind Cloud products, concatenated for a single-fetch
+> context window. For a shorter curated index instead, see /llms.txt.
+
+
+---
+
+## Atlas
+
+Product analytics and event tracking.
+
+
+### Atlas — Introduction
+
+# Introduction
+
+Atlas is Northwind Cloud's product analytics API: you send it events (`checkout_completed`,
+`feature_used`, whatever actions matter to your product), and it gives you funnels, retention cohorts, and
+ad-hoc queryable event data back. It's built for teams who want analytics infrastructure without running
+their own event pipeline.
+
+## What Atlas is not
+
+Atlas is an events API, not a full customer data platform — it doesn't do CDP-style reverse-ETL,
+warehouse syncing, or destination fan-out. If you need those, pair Atlas with [Cascade](/docs/cascade/intro)
+for pipeline/warehouse work; Atlas focuses on being the fastest path from "user did something" to "query it
+in a funnel."
+
+## Key features
+
+- Real-time event streaming with sub-second ingestion (p99 &lt; 400ms from `POST` to queryable)
+- Custom funnels and retention cohorts, computed on read — not batch jobs you wait on
+- SQL-based ad-hoc querying over raw event data via the [query endpoint](./api-reference.md)
+
+## Before you start
+
+Read [Concepts](./concepts.md) first — specifically how Atlas models **events** and **identities** — before
+jumping to [Getting started](./getting-started.md). Ten minutes there will save you from the single most
+common integration mistake: inconsistent event naming that silently breaks funnels weeks later.
+
+### Atlas — Concepts
+
+# Concepts
+
+Atlas has four core objects. Understanding how they relate makes the rest of the API reference much
+easier to follow.
+
+## Events
+
+An **event** is a single, timestamped fact about something a user did — `checkout_completed`,
+`page_viewed`, `signup_started`. Every event has:
+
+- `name` — a snake_case string you choose. Pick a small, consistent vocabulary; `checkout_completed` and
+  `order_completed` fragmenting the same action across your codebase is the single most common cause of
+  broken funnels.
+- `user_id` — the identity the event belongs to (see **Identities**, below).
+- `timestamp` — when it happened. Atlas accepts events up to 24 hours in the past for backfills; older
+  events are accepted but excluded from real-time funnels.
+- `properties` — an arbitrary JSON object of attributes about the event (`revenue`, `plan`, `item_count`).
+
+Events are immutable once ingested. There is no update endpoint — if you sent a mistake, send a
+corrected event rather than trying to edit the original.
+
+## Identities
+
+Atlas tracks people via `user_id`, a string you control (your own database's user ID, not an Atlas-issued
+one). If you need to merge two identities — a common case being an anonymous visitor who later signs up —
+use the identity-merge behavior described in [Getting started](./getting-started.md)
+rather than re-sending historical events under the new ID.
+
+## Funnels
+
+A **funnel** is an ordered sequence of event names. Atlas computes, over a time window, how many identities
+completed step 1, then step 2, and so on — and where they dropped off. Funnels are defined once (`POST
+/v1/atlas/funnels`) and queried repeatedly (`GET /v1/atlas/funnels/:id`); the definition doesn't change
+each time you query it, only the computed result does.
+
+## Cohorts
+
+A **cohort** is a saved *definition* of "identities who did X" — e.g. "signed up in the last 30 days" or
+"completed `checkout_completed` at least 3 times." Cohorts are recomputed on read, so a cohort's membership
+reflects current data every time you fetch it, not a snapshot from when it was created.
+
+### Atlas — Getting Started
+
+# Getting started
+
+## Prerequisites
+
+You'll need a Northwind Cloud account and an Atlas API key, which you can generate from **Settings →
+API Keys** in the dashboard. Atlas keys are scoped per-project — use a separate key for staging and
+production so a leaked staging key can't write to production data.
+
+## Send your first event
+
+**cURL**
+
+```bash
+curl https://api.northwind.cloud/v1/atlas/events \
+  -H "Authorization: Bearer $ATLAS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "events": [{
+      "name": "checkout_completed",
+      "user_id": "usr_8f3a1c",
+      "timestamp": "2026-07-15T14:32:00Z",
+      "properties": { "revenue": 84.50, "currency": "USD", "items": 3 }
+    }]
+  }'
+```
+
+**Node.js**
+
+```js
+import { Atlas } from "@northwind/atlas";
+
+const atlas = new Atlas({ apiKey: process.env.ATLAS_API_KEY });
+
+await atlas.track({
+  name: "checkout_completed",
+  userId: "usr_8f3a1c",
+  properties: { revenue: 84.50, currency: "USD", items: 3 },
+});
+```
+
+**Python**
+
+```python
+from northwind_atlas import Atlas
+
+atlas = Atlas(api_key=os.environ["ATLAS_API_KEY"])
+
+atlas.track(
+    name="checkout_completed",
+    user_id="usr_8f3a1c",
+    properties={"revenue": 84.50, "currency": "USD", "items": 3},
+)
+```
+
+All three do the same thing: the SDKs are thin wrappers over the same `POST /v1/atlas/events` endpoint
+documented in [API reference](./api-reference.md) — if your language isn't listed, the cURL
+example is enough to build your own client against the same endpoint.
+
+## Identifying users
+
+If a visitor starts anonymous and later signs in, don't re-send their historical events under the new
+`user_id` — call the identity-merge endpoint instead so existing funnel/cohort data carries over:
+
+```bash
+curl https://api.northwind.cloud/v1/atlas/identities/merge \
+  -H "Authorization: Bearer $ATLAS_API_KEY" \
+  -d '{ "anonymous_id": "anon_x92k1", "user_id": "usr_8f3a1c" }'
+```
+
+## Verify it worked
+
+Events are queryable within a second of ingestion. Query them back to confirm:
+
+```bash
+curl "https://api.northwind.cloud/v1/atlas/events?user_id=usr_8f3a1c&limit=1" \
+  -H "Authorization: Bearer $ATLAS_API_KEY"
+```
+
+If you get back an empty `data` array, double-check the API key's environment (staging keys can't read
+production events) before assuming ingestion failed.
+
+### Atlas — API Reference
+
+# API reference
+
+## Authentication
+
+All requests require a bearer token in the `Authorization` header: `Authorization: Bearer $ATLAS_API_KEY`.
+Requests without a valid key return `401`; requests with a key that's valid but lacks permission for the
+requested project return `403`.
+
+## Ingest events
+
+`POST /v1/atlas/events`
+
+Accepts up to 1,000 events per request. Larger batches should be chunked client-side — the SDKs do this
+automatically.
+
+**Request**
+
+```json
+{
+  "events": [
+    {
+      "name": "checkout_completed",
+      "user_id": "usr_8f3a1c",
+      "timestamp": "2026-07-15T14:32:00Z",
+      "properties": {
+        "order_id": "ord_29xk3",
+        "revenue": 84.50,
+        "currency": "USD",
+        "items": 3
+      }
+    }
+  ]
+}
+```
+
+**Response** — `202 Accepted`
+
+```json
+{
+  "accepted": 1,
+  "rejected": 0,
+  "batch_id": "batch_7f2e9a1c"
+}
+```
+
+If some events in a batch fail validation, Atlas accepts the valid ones and reports the rest individually
+rather than rejecting the whole batch:
+
+```json
+{
+  "accepted": 2,
+  "rejected": 1,
+  "batch_id": "batch_7f2e9a1c",
+  "errors": [
+    { "index": 2, "code": "invalid_timestamp", "message": "timestamp is more than 24h in the past" }
+  ]
+}
+```
+
+## Query raw events
+
+`GET /v1/atlas/events`
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `user_id` | string | Filter to a single identity |
+| `name` | string | Filter to a single event name |
+| `since` / `until` | ISO 8601 | Time range (defaults to the last 24h) |
+| `limit` | integer | Max 100 per page, default 20 |
+| `cursor` | string | Opaque pagination cursor from the previous response's `next_cursor` |
+
+**Response** — `200 OK`
+
+```json
+{
+  "data": [
+    {
+      "id": "evt_4k2p91xz",
+      "name": "checkout_completed",
+      "user_id": "usr_8f3a1c",
+      "timestamp": "2026-07-15T14:32:00Z",
+      "properties": { "revenue": 84.50, "currency": "USD", "items": 3 }
+    }
+  ],
+  "next_cursor": "eyJvZmZzZXQiOjIwfQ==",
+  "has_more": true
+}
+```
+
+## Funnels
+
+`POST /v1/atlas/funnels` creates a funnel definition; `GET /v1/atlas/funnels/:id` computes and returns
+current results for it.
+
+**Create — request**
+
+```json
+{
+  "name": "Signup to purchase",
+  "steps": ["signup_completed", "product_viewed", "checkout_completed"],
+  "window": "7d"
+}
+```
+
+**Query — response**
+
+```json
+{
+  "id": "fnl_9x2k3p",
+  "name": "Signup to purchase",
+  "steps": [
+    { "name": "signup_completed", "count": 4200, "conversion_from_previous": 1.0 },
+    { "name": "product_viewed", "count": 3110, "conversion_from_previous": 0.74 },
+    { "name": "checkout_completed", "count": 892, "conversion_from_previous": 0.29 }
+  ]
+}
+```
+
+## Cohorts
+
+`GET /v1/atlas/cohorts/:id` — membership is recomputed on every call, not cached at creation time.
+
+```json
+{
+  "id": "cht_3f8a2c",
+  "name": "Active purchasers (30d)",
+  "size": 1847,
+  "last_computed": "2026-07-15T14:32:00Z"
+}
+```
+
+## Errors
+
+| HTTP status | `code` | Meaning |
+| --- | --- | --- |
+| 400 | `invalid_event_schema` | A required field was missing or the wrong type |
+| 400 | `invalid_timestamp` | Timestamp is more than 24h in the past, or in the future |
+| 401 | `invalid_api_key` | Key is missing, malformed, or revoked |
+| 403 | `insufficient_scope` | Key is valid but not authorized for this project |
+| 413 | `batch_too_large` | More than 1,000 events in one request |
+| 429 | `rate_limited` | See rate limits below; back off using the `Retry-After` header |
+
+## Rate limits
+
+600 requests/minute per API key for `/events` (ingestion), 60 requests/minute for query endpoints
+(`/events` GET, `/funnels`, `/cohorts`). Limits are per-key, not per-project — split high-volume ingestion
+across multiple keys if you need more throughput rather than requesting a limit increase first.
+
+## Support
+
+For questions about Atlas, contact the product team or visit the community forum.
+
+### Atlas — Migration Guide
+
+# Migrating from 1.0.0
+
+This page only exists in the **current (unreleased)** docs — it did not exist in `1.0.0` and won't appear
+if you switch the version dropdown back to `1.0.0`. That's versioning working as intended: each version
+snapshot reflects exactly what was true for that release, including which pages existed at all.
+
+## What changed
+
+- The `resources` endpoint now requires pagination parameters (`page`, `page_size`) on `GET` requests.
+- Authentication tokens issued under `1.0.0` remain valid; no re-auth is required.
+
+---
+
+## Beacon
+
+Uptime monitoring and alerting.
+
+
+### Beacon — Introduction
+
+# Introduction
+
+Welcome to the Beacon documentation.
+
+Beacon is one of the product lines in the Northwind Cloud platform. Uptime monitoring and alerting.
+
+## Key features
+
+- Multi-region synthetic checks every 30 seconds
+- Alert routing to Slack, PagerDuty, and email
+- Public, brandable status pages per customer
+
+## What you'll find here
+
+This section covers installation, configuration, and the core concepts you need to integrate with this product.
+
+### Beacon — Getting Started
+
+# Getting Started
+
+## Prerequisites
+
+Before you begin, make sure you have a Northwind Cloud account and API access enabled for Beacon.
+
+## Installation
+
+Install the Beacon SDK using your package manager of choice, then initialize it with your project API key.
+
+```bash
+npm install @northwind/beacon
+```
+
+## Quick start
+
+The fastest way to see Beacon in action is to run the quick-start example in your local environment.
+
+```js
+import { Beacon } from "@northwind/beacon";
+
+const client = new Beacon({ apiKey: process.env.NORTHWIND_API_KEY });
+```
+
+### Beacon — API Reference
+
+# API Reference
+
+## Authentication
+
+All requests to the Beacon API must include a valid bearer token in the Authorization header.
+
+## Endpoints
+
+The table below lists the primary endpoints exposed by the Beacon API.
+
+| Method | Path | Description |
+| --- | --- | --- |
+| POST | `/v1/beacon/monitors` | Create a new uptime monitor |
+| GET | `/v1/beacon/incidents` | List open and resolved incidents |
+| POST | `/v1/beacon/status-pages` | Publish a public status page |
+
+## Support
+
+For questions about Beacon, contact the product team or visit the community forum.
+
+---
+
+## Cascade
+
+Managed data pipelines and ETL.
+
+
+### Cascade — Introduction
+
+# Introduction
+
+Welcome to the Cascade documentation.
+
+Cascade is one of the product lines in the Northwind Cloud platform. Managed data pipelines and ETL.
+
+## Key features
+
+- Declarative pipeline definitions in YAML
+- Built-in connectors for 40+ data sources
+- Automatic schema drift detection
+
+## What you'll find here
+
+This section covers installation, configuration, and the core concepts you need to integrate with this product.
+
+### Cascade — Getting Started
+
+# Getting Started
+
+## Prerequisites
+
+Before you begin, make sure you have a Northwind Cloud account and API access enabled for Cascade.
+
+## Installation
+
+Install the Cascade SDK using your package manager of choice, then initialize it with your project API key.
+
+```bash
+npm install @northwind/cascade
+```
+
+## Quick start
+
+The fastest way to see Cascade in action is to run the quick-start example in your local environment.
+
+```js
+import { Cascade } from "@northwind/cascade";
+
+const client = new Cascade({ apiKey: process.env.NORTHWIND_API_KEY });
+```
+
+### Cascade — API Reference
+
+# API Reference
+
+## Authentication
+
+All requests to the Cascade API must include a valid bearer token in the Authorization header.
+
+## Endpoints
+
+The table below lists the primary endpoints exposed by the Cascade API.
+
+| Method | Path | Description |
+| --- | --- | --- |
+| POST | `/v1/cascade/pipelines` | Create a data pipeline |
+| GET | `/v1/cascade/runs/:id` | Get a pipeline run's status |
+| POST | `/v1/cascade/pipelines/:id/trigger` | Manually trigger a pipeline run |
+
+## Support
+
+For questions about Cascade, contact the product team or visit the community forum.
+
+---
+
+## Delta
+
+Real-time data sync across services.
+
+
+### Delta — Introduction
+
+# Introduction
+
+Welcome to the Delta documentation.
+
+Delta is one of the product lines in the Northwind Cloud platform. Real-time data sync across services.
+
+## Key features
+
+- Bi-directional sync with conflict resolution
+- Sub-second propagation between endpoints
+- Change-data-capture from Postgres, MySQL, and Mongo
+
+## What you'll find here
+
+This section covers installation, configuration, and the core concepts you need to integrate with this product.
+
+### Delta — Getting Started
+
+# Getting Started
+
+## Prerequisites
+
+Before you begin, make sure you have a Northwind Cloud account and API access enabled for Delta.
+
+## Installation
+
+Install the Delta SDK using your package manager of choice, then initialize it with your project API key.
+
+```bash
+npm install @northwind/delta
+```
+
+## Quick start
+
+The fastest way to see Delta in action is to run the quick-start example in your local environment.
+
+```js
+import { Delta } from "@northwind/delta";
+
+const client = new Delta({ apiKey: process.env.NORTHWIND_API_KEY });
+```
+
+### Delta — API Reference
+
+# API Reference
+
+## Authentication
+
+All requests to the Delta API must include a valid bearer token in the Authorization header.
+
+## Endpoints
+
+The table below lists the primary endpoints exposed by the Delta API.
+
+| Method | Path | Description |
+| --- | --- | --- |
+| POST | `/v1/delta/syncs` | Create a sync link between two services |
+| GET | `/v1/delta/syncs/:id/status` | Check sync lag and health |
+| DELETE | `/v1/delta/syncs/:id` | Tear down a sync link |
+
+## Support
+
+For questions about Delta, contact the product team or visit the community forum.
+
+---
+
+## Echo
+
+Programmable chat and messaging API.
+
+
+### Echo — Introduction
+
+# Introduction
+
+Welcome to the Echo documentation.
+
+Echo is one of the product lines in the Northwind Cloud platform. Programmable chat and messaging API.
+
+## Key features
+
+- Drop-in chat UI components for web and mobile
+- End-to-end encrypted channels
+- Webhooks for every message and presence event
+
+## What you'll find here
+
+This section covers installation, configuration, and the core concepts you need to integrate with this product.
+
+### Echo — Getting Started
+
+# Getting Started
+
+## Prerequisites
+
+Before you begin, make sure you have a Northwind Cloud account and API access enabled for Echo.
+
+## Installation
+
+Install the Echo SDK using your package manager of choice, then initialize it with your project API key.
+
+```bash
+npm install @northwind/echo
+```
+
+## Quick start
+
+The fastest way to see Echo in action is to run the quick-start example in your local environment.
+
+```js
+import { Echo } from "@northwind/echo";
+
+const client = new Echo({ apiKey: process.env.NORTHWIND_API_KEY });
+```
+
+### Echo — API Reference
+
+# API Reference
+
+## Authentication
+
+All requests to the Echo API must include a valid bearer token in the Authorization header.
+
+## Endpoints
+
+The table below lists the primary endpoints exposed by the Echo API.
+
+| Method | Path | Description |
+| --- | --- | --- |
+| POST | `/v1/echo/channels` | Create a chat channel |
+| POST | `/v1/echo/messages` | Send a message to a channel |
+| GET | `/v1/echo/channels/:id/messages` | Fetch channel message history |
+
+## Support
+
+For questions about Echo, contact the product team or visit the community forum.
+
+---
+
+## Falcon
+
+Hosted full-text and vector search.
+
+
+### Falcon — Introduction
+
+# Introduction
+
+Welcome to the Falcon documentation.
+
+Falcon is one of the product lines in the Northwind Cloud platform. Hosted full-text and vector search.
+
+## Key features
+
+- Hybrid keyword + vector ranking
+- Typo-tolerant fuzzy matching
+- Sub-100ms query latency at 10M+ documents
+
+## What you'll find here
+
+This section covers installation, configuration, and the core concepts you need to integrate with this product.
+
+### Falcon — Getting Started
+
+# Getting Started
+
+## Prerequisites
+
+Before you begin, make sure you have a Northwind Cloud account and API access enabled for Falcon.
+
+## Installation
+
+Install the Falcon SDK using your package manager of choice, then initialize it with your project API key.
+
+```bash
+npm install @northwind/falcon
+```
+
+## Quick start
+
+The fastest way to see Falcon in action is to run the quick-start example in your local environment.
+
+```js
+import { Falcon } from "@northwind/falcon";
+
+const client = new Falcon({ apiKey: process.env.NORTHWIND_API_KEY });
+```
+
+### Falcon — API Reference
+
+# API Reference
+
+## Authentication
+
+All requests to the Falcon API must include a valid bearer token in the Authorization header.
+
+## Endpoints
+
+The table below lists the primary endpoints exposed by the Falcon API.
+
+| Method | Path | Description |
+| --- | --- | --- |
+| POST | `/v1/falcon/indexes` | Create a search index |
+| POST | `/v1/falcon/indexes/:id/documents` | Index a batch of documents |
+| POST | `/v1/falcon/indexes/:id/query` | Run a search query |
+
+## Support
+
+For questions about Falcon, contact the product team or visit the community forum.
+
+---
+
+## Genesis
+
+Identity, auth, and SSO platform.
+
+
+### Genesis — Introduction
+
+# Introduction
+
+Genesis is Northwind Cloud's identity platform: user accounts, sessions, role-based permissions, and
+enterprise SSO (SAML/OIDC), so you're not building auth from scratch or shipping your own password
+hashing.
+
+## Who this is for
+
+If you're building a B2C product, you'll mostly use Genesis's session and passkey/magic-link endpoints. If
+you're selling to enterprises, you'll also need [SSO connections](./concepts.md) — budget
+extra integration time for that specifically, since every customer's identity provider (Okta, Azure AD,
+Google Workspace) behaves slightly differently even against the same SAML/OIDC spec.
+
+## Key features
+
+- SAML and OIDC SSO, scoped per customer email domain
+- Passwordless magic-link and WebAuthn passkey login
+- Fine-grained role-based access control — authorize on permissions, not role names
+
+## Before you start
+
+[Concepts](./concepts.md) covers the session/token model and the SSO domain-enforcement behavior that
+trips up most first-time integrations — read it before [Getting started](./getting-started.md).
+
+### Genesis — Concepts
+
+# Concepts
+
+## Users, sessions, and tokens
+
+A **user** is a person; a **session** is one authenticated login for that person, with an `expires_at`.
+Creating a session (`POST /v1/genesis/sessions`) returns a short-lived JWT `token` you attach to
+subsequent requests — Genesis doesn't use long-lived API keys for end-user auth the way it does for
+service-to-service calls (see [Authentication](./api-reference.md)).
+
+## Roles and permissions
+
+Genesis uses role-based access control: a user has one or more **roles**, and each role grants a set of
+**permissions** (`billing:read`, `users:write`, etc.). Check permissions, not role names, in your
+authorization logic — role-to-permission mappings can change over time, and code that hardcodes `if (role
+=== "admin")` breaks silently when roles are restructured.
+
+## SSO connections
+
+An **SSO connection** configures how one customer's users authenticate via their own identity provider
+(SAML or OIDC), scoped to an email domain. Once a domain has an active connection, users on that domain
+are *required* to authenticate via SSO — password login for that domain is disabled, not merely optional.
+This is a common gotcha during SSO rollout: test with a non-production domain first.
+
+## MFA and passkeys
+
+Genesis supports TOTP-based MFA and WebAuthn passkeys. A session created without completing a required MFA
+challenge is rejected with `403 mfa_required`, not silently downgraded to an unverified session — there is
+no partial-auth state exposed to your application.
+
+### Genesis — Getting Started
+
+# Getting started
+
+## Prerequisites
+
+A Northwind Cloud account with Genesis enabled, and a service-to-service API key from **Settings → API
+Keys** (used to create users server-side — end users authenticate with sessions, not this key).
+
+## Create a user
+
+**cURL**
+
+```bash
+curl https://api.northwind.cloud/v1/genesis/users \
+  -H "Authorization: Bearer $GENESIS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "email": "jordan@acme.com", "roles": ["member"] }'
+```
+
+**Node.js**
+
+```js
+import { Genesis } from "@northwind/genesis";
+
+const genesis = new Genesis({ apiKey: process.env.GENESIS_API_KEY });
+
+const user = await genesis.users.create({
+  email: "jordan@acme.com",
+  roles: ["member"],
+});
+```
+
+**Python**
+
+```python
+from northwind_genesis import Genesis
+
+genesis = Genesis(api_key=os.environ["GENESIS_API_KEY"])
+
+user = genesis.users.create(email="jordan@acme.com", roles=["member"])
+```
+
+## Start a session (login)
+
+Sessions are created with a separate, user-facing flow — typically called from your login form's submit
+handler, not with your service API key:
+
+```bash
+curl https://api.northwind.cloud/v1/genesis/sessions \
+  -H "Content-Type: application/json" \
+  -d '{ "email": "jordan@acme.com", "password": "user-entered-password" }'
+```
+
+A successful response includes a short-lived `token` — attach it as a bearer token on subsequent requests
+made on behalf of that user. If the account has MFA enabled, this call instead returns `403 mfa_required`
+and you'll need the follow-up MFA-verification step in [API reference](./api-reference.md).
+
+## Set up SSO for a customer domain
+
+```bash
+curl https://api.northwind.cloud/v1/genesis/sso/connections \
+  -H "Authorization: Bearer $GENESIS_API_KEY" \
+  -d '{ "domain": "acme.com", "protocol": "saml", "metadata_url": "https://acme.okta.com/app/.../sso/saml/metadata" }'
+```
+
+**Test this against a non-production domain first.** Once a connection is active for a domain, password
+login is disabled for every user on that domain — see
+[Concepts](./concepts.md) for why that's not optional.
+
+### Genesis — API Reference
+
+# API reference
+
+## Authentication
+
+Two different credential types, don't mix them up:
+
+- **Service API key** (`Authorization: Bearer $GENESIS_API_KEY`) — for server-to-server calls like
+  creating users or configuring SSO. Never expose this in client-side code.
+- **Session token** — short-lived, returned by `POST /v1/genesis/sessions`, used to act on behalf of one
+  logged-in user.
+
+## Create a user
+
+`POST /v1/genesis/users`
+
+```json
+{
+  "email": "jordan@acme.com",
+  "roles": ["member"]
+}
+```
+
+**Response** — `201 Created`
+
+```json
+{
+  "id": "usr_3f8a2c",
+  "email": "jordan@acme.com",
+  "roles": ["member"],
+  "created": "2026-07-20T09:14:22Z"
+}
+```
+
+## Start a session
+
+`POST /v1/genesis/sessions`
+
+```json
+{
+  "email": "jordan@acme.com",
+  "password": "user-entered-password"
+}
+```
+
+**Response** — `200 OK`
+
+```json
+{
+  "session_id": "sess_6k2p9x",
+  "user_id": "usr_3f8a2c",
+  "expires_at": "2026-07-21T09:14:22Z",
+  "token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+If MFA is enabled on the account, this returns `403 mfa_required` instead — resubmit to
+`/v1/genesis/sessions/mfa` with the same credentials plus `mfa_code` to complete login.
+
+## Configure SSO
+
+`POST /v1/genesis/sso/connections`
+
+```json
+{
+  "domain": "acme.com",
+  "protocol": "saml",
+  "metadata_url": "https://acme.okta.com/app/exkabc123/sso/saml/metadata"
+}
+```
+
+`protocol` is `"saml"` or `"oidc"`. Once created and active, password login is disabled for every user on
+that domain.
+
+## Errors
+
+| HTTP status | `code` | Meaning |
+| --- | --- | --- |
+| 401 | `invalid_credentials` | Email/password didn't match |
+| 403 | `mfa_required` | Credentials were correct; MFA challenge must be completed to finish login |
+| 403 | `sso_required` | This email's domain has an active SSO connection; password login is disabled |
+| 429 | `too_many_attempts` | Account temporarily locked after 5 failed attempts within 15 minutes |
+
+`too_many_attempts` lockouts clear automatically after 15 minutes — there is no manual-unlock endpoint by
+design, to avoid creating an account-takeover vector via support-initiated unlocks.
+
+## Rate limits
+
+20 login attempts/minute per IP address, independent of the per-account lockout above — this limits
+credential-stuffing attempts across many accounts from one source.
+
+## Support
+
+For questions about Genesis, contact the product team or visit the community forum.
+
+---
+
+## Horizon
+
+Embeddable dashboards and BI.
+
+
+### Horizon — Introduction
+
+# Introduction
+
+Welcome to the Horizon documentation.
+
+Horizon is one of the product lines in the Northwind Cloud platform. Embeddable dashboards and BI.
+
+## Key features
+
+- Drag-and-drop dashboard builder
+- Row-level data security per embed
+- White-labeled embeds via signed tokens
+
+## What you'll find here
+
+This section covers installation, configuration, and the core concepts you need to integrate with this product.
+
+### Horizon — Getting Started
+
+# Getting Started
+
+## Prerequisites
+
+Before you begin, make sure you have a Northwind Cloud account and API access enabled for Horizon.
+
+## Installation
+
+Install the Horizon SDK using your package manager of choice, then initialize it with your project API key.
+
+```bash
+npm install @northwind/horizon
+```
+
+## Quick start
+
+The fastest way to see Horizon in action is to run the quick-start example in your local environment.
+
+```js
+import { Horizon } from "@northwind/horizon";
+
+const client = new Horizon({ apiKey: process.env.NORTHWIND_API_KEY });
+```
+
+### Horizon — API Reference
+
+# API Reference
+
+## Authentication
+
+All requests to the Horizon API must include a valid bearer token in the Authorization header.
+
+## Endpoints
+
+The table below lists the primary endpoints exposed by the Horizon API.
+
+| Method | Path | Description |
+| --- | --- | --- |
+| POST | `/v1/horizon/dashboards` | Create a dashboard |
+| GET | `/v1/horizon/dashboards/:id/embed-token` | Generate a signed embed token |
+| GET | `/v1/horizon/datasets` | List connected datasets |
+
+## Support
+
+For questions about Horizon, contact the product team or visit the community forum.
+
+---
+
+## Ion
+
+Global payments and billing.
+
+
+### Ion — Introduction
+
+# Introduction
+
+Ion is Northwind Cloud's payments API: charges, saved payment methods, subscriptions, and refunds across
+135+ currencies, with PCI-DSS Level 1 compliant card vaulting so you never need to handle raw card numbers
+on your own servers.
+
+## Test mode vs. live mode
+
+Every Ion account has separate test and live API keys (prefixed `sk_test_` and `sk_live_`). Test-mode
+charges use the same API and validation rules as live mode but never move real money — build and test your
+entire integration in test mode, including failure paths, before switching keys.
+
+## Key features
+
+- 135+ currencies and local payment methods
+- PCI-DSS Level 1 compliant card vaulting — card numbers never touch your servers
+- Usage-based and subscription billing with automatic dunning on failed renewals
+
+## Before you start
+
+Read [Concepts](./concepts.md) — in particular how amounts are represented as integers and how
+idempotency keys work — before writing any charge-creation code. Both are easy to get wrong once and
+expensive to get wrong in production.
+
+### Ion — Concepts
+
+# Concepts
+
+## Amounts are integers
+
+Every amount in the Ion API is an integer in the currency's **smallest unit** — cents for USD, yen for
+JPY (which has no subunit, so ¥500 is `500`, not `50000`). This avoids floating-point rounding errors in
+money math. `amount: 4200` for `currency: "usd"` means $42.00.
+
+## Charges
+
+A **charge** is a single attempt to move money from a customer to you. Charges are created in one call
+and settle asynchronously — a `succeeded` status means the charge was authorized, not necessarily that
+funds have finished settling into your payout account.
+
+## Customers and payment methods
+
+A **customer** is a reusable record you attach one or more **payment methods** to (cards, bank accounts).
+Creating a customer up front — rather than passing raw card details on every charge — is what enables
+saved-card checkout and subscriptions.
+
+## Idempotency keys
+
+Every write endpoint (`charges`, `refunds`, `subscriptions`) accepts an `idempotency_key`. If a request
+times out and you retry it with the **same** key, Ion returns the original result instead of creating a
+duplicate charge. Reusing a key with a **different** request body is treated as an error — see
+[Errors](./api-reference.md). Always generate idempotency keys client-side, tied to the business
+action (e.g. your own order ID), not randomly per HTTP attempt.
+
+## Subscriptions
+
+A **subscription** binds a customer to a plan and bills on a recurring schedule. Subscriptions have a
+`current_period_end`; Ion attempts to charge automatically at that boundary and moves the subscription to
+`past_due` (not immediately `canceled`) if the charge fails, giving you a dunning window before access is
+revoked.
+
+## Refunds
+
+Refunds reference a charge and can be partial. A charge can have multiple partial refunds as long as their
+total doesn't exceed the original amount.
+
+### Ion — Getting Started
+
+# Getting started
+
+## Prerequisites
+
+A Northwind Cloud account with Ion enabled, and your **test-mode** secret key (`sk_test_...`) from
+**Settings → API Keys**. Use test mode for everything in this guide.
+
+## Create a charge
+
+**cURL**
+
+```bash
+curl https://api.northwind.cloud/v1/ion/charges \
+  -H "Authorization: Bearer $ION_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "amount": 4200,
+    "currency": "usd",
+    "payment_method": "pm_card_test_visa",
+    "idempotency_key": "order_9f3e-attempt-1"
+  }'
+```
+
+**Node.js**
+
+```js
+import { Ion } from "@northwind/ion";
+
+const ion = new Ion({ apiKey: process.env.ION_SECRET_KEY });
+
+const charge = await ion.charges.create({
+  amount: 4200,
+  currency: "usd",
+  paymentMethod: "pm_card_test_visa",
+  idempotencyKey: "order_9f3e-attempt-1",
+});
+```
+
+**Python**
+
+```python
+from northwind_ion import Ion
+
+ion = Ion(api_key=os.environ["ION_SECRET_KEY"])
+
+charge = ion.charges.create(
+    amount=4200,
+    currency="usd",
+    payment_method="pm_card_test_visa",
+    idempotency_key="order_9f3e-attempt-1",
+)
+```
+
+`amount: 4200` for `currency: "usd"` is $42.00 — see [Concepts](./concepts.md) for why
+amounts are always integers. `pm_card_test_visa` is a built-in test payment method that always succeeds;
+Ion also provides `pm_card_test_decline` for testing failure handling, which you should do before going
+live — see [Errors](./api-reference.md).
+
+## Always set an idempotency key
+
+The `idempotency_key` above matters more than it looks: if your network call times out after Ion received
+it but before you got the response, retrying with the **same** key returns the original charge instead of
+creating a second one. Tie it to something stable in your own system (an order ID), not a random value
+generated per HTTP attempt — a random key defeats the whole point.
+
+## Verify it worked
+
+```bash
+curl https://api.northwind.cloud/v1/ion/charges/ch_3P8kq2Aa \
+  -H "Authorization: Bearer $ION_SECRET_KEY"
+```
+
+A `status: "succeeded"` response confirms the charge went through in test mode. Full field reference is in
+[API reference](./api-reference.md).
+
+### Ion — API Reference
+
+# API reference
+
+## Authentication
+
+Bearer token in the `Authorization` header: `Authorization: Bearer $ION_SECRET_KEY`. Test-mode keys
+(`sk_test_...`) and live-mode keys (`sk_live_...`) are separate credentials — a test key can never move
+real money, even by accident.
+
+## Create a charge
+
+`POST /v1/ion/charges`
+
+**Request**
+
+```json
+{
+  "amount": 4200,
+  "currency": "usd",
+  "customer": "cus_h82ndk3",
+  "payment_method": "pm_1a2b3c",
+  "idempotency_key": "order_9f3e-attempt-1"
+}
+```
+
+**Response** — `200 OK`
+
+```json
+{
+  "id": "ch_3P8kq2Aa",
+  "amount": 4200,
+  "currency": "usd",
+  "status": "succeeded",
+  "customer": "cus_h82ndk3",
+  "created": "2026-07-20T09:14:22Z"
+}
+```
+
+`status` is one of `succeeded`, `pending` (some local payment methods settle asynchronously), or `failed`.
+
+## Create a customer
+
+`POST /v1/ion/customers`
+
+```json
+{
+  "email": "jordan@acme.com",
+  "payment_method": "pm_1a2b3c"
+}
+```
+
+Response includes the customer `id` (`cus_...`) to reuse on future charges and subscriptions.
+
+## Create a subscription
+
+`POST /v1/ion/subscriptions`
+
+```json
+{
+  "customer": "cus_h82ndk3",
+  "plan": "plan_pro_monthly",
+  "idempotency_key": "sub_acme_pro-2026-07"
+}
+```
+
+**Response**
+
+```json
+{
+  "id": "sub_7k2p9x",
+  "status": "active",
+  "current_period_end": "2026-08-20T09:14:22Z"
+}
+```
+
+## Issue a refund
+
+`POST /v1/ion/refunds`
+
+```json
+{
+  "charge": "ch_3P8kq2Aa",
+  "amount": 2000
+}
+```
+
+Omit `amount` to refund the charge in full. Partial refunds can be issued multiple times against the same
+charge as long as their total doesn't exceed the original amount.
+
+## Errors
+
+| HTTP status | `code` | Meaning |
+| --- | --- | --- |
+| 400 | `invalid_currency` | Currency not supported, or amount invalid for that currency's subunit |
+| 402 | `card_declined` | The payment method was declined by the issuer |
+| 404 | `no_such_charge` | The referenced `charge`/`customer`/`payment_method` ID doesn't exist |
+| 409 | `idempotency_key_reused` | Same key used with a **different** request body than the original |
+| 429 | `rate_limited` | Back off using the `Retry-After` header |
+
+`card_declined` responses include a `decline_code` (`insufficient_funds`, `expired_card`,
+`generic_decline`, …) — surface this to the end user rather than a generic "payment failed" message where
+possible; it materially reduces retry-and-fail loops at checkout.
+
+## Rate limits
+
+100 requests/second per API key across all endpoints. Charge creation specifically is additionally capped
+at 25/second per key to limit the blast radius of a runaway retry loop.
+
+## Support
+
+For questions about Ion, contact the product team or visit the community forum.
+
+---
+
+## Juno
+
+Distributed job scheduling.
+
+
+### Juno — Introduction
+
+# Introduction
+
+Welcome to the Juno documentation.
+
+Juno is one of the product lines in the Northwind Cloud platform. Distributed job scheduling.
+
+## Key features
+
+- Cron and event-triggered jobs
+- At-least-once and exactly-once delivery modes
+- Automatic retries with exponential backoff
+
+## What you'll find here
+
+This section covers installation, configuration, and the core concepts you need to integrate with this product.
+
+### Juno — Getting Started
+
+# Getting Started
+
+## Prerequisites
+
+Before you begin, make sure you have a Northwind Cloud account and API access enabled for Juno.
+
+## Installation
+
+Install the Juno SDK using your package manager of choice, then initialize it with your project API key.
+
+```bash
+npm install @northwind/juno
+```
+
+## Quick start
+
+The fastest way to see Juno in action is to run the quick-start example in your local environment.
+
+```js
+import { Juno } from "@northwind/juno";
+
+const client = new Juno({ apiKey: process.env.NORTHWIND_API_KEY });
+```
+
+### Juno — API Reference
+
+# API Reference
+
+## Authentication
+
+All requests to the Juno API must include a valid bearer token in the Authorization header.
+
+## Endpoints
+
+The table below lists the primary endpoints exposed by the Juno API.
+
+| Method | Path | Description |
+| --- | --- | --- |
+| POST | `/v1/juno/jobs` | Schedule a job |
+| GET | `/v1/juno/jobs/:id/runs` | List a job's execution history |
+| POST | `/v1/juno/jobs/:id/pause` | Pause a scheduled job |
+
+## Support
+
+For questions about Juno, contact the product team or visit the community forum.
+
+---
+
+## Kepler
+
+Geospatial and mapping APIs.
+
+
+### Kepler — Introduction
+
+# Introduction
+
+Welcome to the Kepler documentation.
+
+Kepler is one of the product lines in the Northwind Cloud platform. Geospatial and mapping APIs.
+
+## Key features
+
+- Turn-by-turn routing and ETAs
+- Reverse geocoding at street-level accuracy
+- Geofencing with real-time enter/exit events
+
+## What you'll find here
+
+This section covers installation, configuration, and the core concepts you need to integrate with this product.
+
+### Kepler — Getting Started
+
+# Getting Started
+
+## Prerequisites
+
+Before you begin, make sure you have a Northwind Cloud account and API access enabled for Kepler.
+
+## Installation
+
+Install the Kepler SDK using your package manager of choice, then initialize it with your project API key.
+
+```bash
+npm install @northwind/kepler
+```
+
+## Quick start
+
+The fastest way to see Kepler in action is to run the quick-start example in your local environment.
+
+```js
+import { Kepler } from "@northwind/kepler";
+
+const client = new Kepler({ apiKey: process.env.NORTHWIND_API_KEY });
+```
+
+### Kepler — API Reference
+
+# API Reference
+
+## Authentication
+
+All requests to the Kepler API must include a valid bearer token in the Authorization header.
+
+## Endpoints
+
+The table below lists the primary endpoints exposed by the Kepler API.
+
+| Method | Path | Description |
+| --- | --- | --- |
+| GET | `/v1/kepler/geocode` | Convert an address to coordinates |
+| POST | `/v1/kepler/routes` | Calculate a route between points |
+| POST | `/v1/kepler/geofences` | Create a geofence |
+
+## Support
+
+For questions about Kepler, contact the product team or visit the community forum.
+
+---
+
+## Lumen
+
+Transactional email, SMS, and push.
+
+
+### Lumen — Introduction
+
+# Introduction
+
+Welcome to the Lumen documentation.
+
+Lumen is one of the product lines in the Northwind Cloud platform. Transactional email, SMS, and push.
+
+## Key features
+
+- Multi-channel delivery from one API
+- Built-in deliverability and bounce handling
+- Template management with versioning
+
+## What you'll find here
+
+This section covers installation, configuration, and the core concepts you need to integrate with this product.
+
+### Lumen — Getting Started
+
+# Getting Started
+
+## Prerequisites
+
+Before you begin, make sure you have a Northwind Cloud account and API access enabled for Lumen.
+
+## Installation
+
+Install the Lumen SDK using your package manager of choice, then initialize it with your project API key.
+
+```bash
+npm install @northwind/lumen
+```
+
+## Quick start
+
+The fastest way to see Lumen in action is to run the quick-start example in your local environment.
+
+```js
+import { Lumen } from "@northwind/lumen";
+
+const client = new Lumen({ apiKey: process.env.NORTHWIND_API_KEY });
+```
+
+### Lumen — API Reference
+
+# API Reference
+
+## Authentication
+
+All requests to the Lumen API must include a valid bearer token in the Authorization header.
+
+## Endpoints
+
+The table below lists the primary endpoints exposed by the Lumen API.
+
+| Method | Path | Description |
+| --- | --- | --- |
+| POST | `/v1/lumen/messages` | Send a transactional message |
+| GET | `/v1/lumen/messages/:id` | Check delivery status |
+| POST | `/v1/lumen/templates` | Create a message template |
+
+## Support
+
+For questions about Lumen, contact the product team or visit the community forum.
+
+---
+
+## Meridian
+
+Workflow automation engine.
+
+
+### Meridian — Introduction
+
+# Introduction
+
+Welcome to the Meridian documentation.
+
+Meridian is one of the product lines in the Northwind Cloud platform. Workflow automation engine.
+
+## Key features
+
+- Visual workflow builder with branching logic
+- 200+ pre-built integration steps
+- Human-in-the-loop approval steps
+
+## What you'll find here
+
+This section covers installation, configuration, and the core concepts you need to integrate with this product.
+
+### Meridian — Getting Started
+
+# Getting Started
+
+## Prerequisites
+
+Before you begin, make sure you have a Northwind Cloud account and API access enabled for Meridian.
+
+## Installation
+
+Install the Meridian SDK using your package manager of choice, then initialize it with your project API key.
+
+```bash
+npm install @northwind/meridian
+```
+
+## Quick start
+
+The fastest way to see Meridian in action is to run the quick-start example in your local environment.
+
+```js
+import { Meridian } from "@northwind/meridian";
+
+const client = new Meridian({ apiKey: process.env.NORTHWIND_API_KEY });
+```
+
+### Meridian — API Reference
+
+# API Reference
+
+## Authentication
+
+All requests to the Meridian API must include a valid bearer token in the Authorization header.
+
+## Endpoints
+
+The table below lists the primary endpoints exposed by the Meridian API.
+
+| Method | Path | Description |
+| --- | --- | --- |
+| POST | `/v1/meridian/workflows` | Create a workflow |
+| POST | `/v1/meridian/workflows/:id/runs` | Trigger a workflow run |
+| GET | `/v1/meridian/workflows/:id/runs/:runId` | Get run status and step output |
+
+## Support
+
+For questions about Meridian, contact the product team or visit the community forum.
+
+---
+
+## Nova
+
+Managed ML model hosting.
+
+
+### Nova — Introduction
+
+# Introduction
+
+Welcome to the Nova documentation.
+
+Nova is one of the product lines in the Northwind Cloud platform. Managed ML model hosting.
+
+## Key features
+
+- One-command deploy from common ML frameworks
+- Auto-scaling GPU inference endpoints
+- Built-in request/response logging for drift detection
+
+## What you'll find here
+
+This section covers installation, configuration, and the core concepts you need to integrate with this product.
+
+### Nova — Getting Started
+
+# Getting Started
+
+## Prerequisites
+
+Before you begin, make sure you have a Northwind Cloud account and API access enabled for Nova.
+
+## Installation
+
+Install the Nova SDK using your package manager of choice, then initialize it with your project API key.
+
+```bash
+npm install @northwind/nova
+```
+
+## Quick start
+
+The fastest way to see Nova in action is to run the quick-start example in your local environment.
+
+```js
+import { Nova } from "@northwind/nova";
+
+const client = new Nova({ apiKey: process.env.NORTHWIND_API_KEY });
+```
+
+### Nova — API Reference
+
+# API Reference
+
+## Authentication
+
+All requests to the Nova API must include a valid bearer token in the Authorization header.
+
+## Endpoints
+
+The table below lists the primary endpoints exposed by the Nova API.
+
+| Method | Path | Description |
+| --- | --- | --- |
+| POST | `/v1/nova/models` | Deploy a model |
+| POST | `/v1/nova/models/:id/predict` | Run inference against a deployed model |
+| GET | `/v1/nova/models/:id/metrics` | Get latency and throughput metrics |
+
+## Support
+
+For questions about Nova, contact the product team or visit the community forum.
+
+---
+
+## Orion
+
+Object storage and CDN.
+
+
+### Orion — Introduction
+
+# Introduction
+
+Welcome to the Orion documentation.
+
+Orion is one of the product lines in the Northwind Cloud platform. Object storage and CDN.
+
+## Key features
+
+- Global edge caching with instant invalidation
+- Automatic image resizing and format negotiation
+- S3-compatible API
+
+## What you'll find here
+
+This section covers installation, configuration, and the core concepts you need to integrate with this product.
+
+### Orion — Getting Started
+
+# Getting Started
+
+## Prerequisites
+
+Before you begin, make sure you have a Northwind Cloud account and API access enabled for Orion.
+
+## Installation
+
+Install the Orion SDK using your package manager of choice, then initialize it with your project API key.
+
+```bash
+npm install @northwind/orion
+```
+
+## Quick start
+
+The fastest way to see Orion in action is to run the quick-start example in your local environment.
+
+```js
+import { Orion } from "@northwind/orion";
+
+const client = new Orion({ apiKey: process.env.NORTHWIND_API_KEY });
+```
+
+### Orion — API Reference
+
+# API Reference
+
+## Authentication
+
+All requests to the Orion API must include a valid bearer token in the Authorization header.
+
+## Endpoints
+
+The table below lists the primary endpoints exposed by the Orion API.
+
+| Method | Path | Description |
+| --- | --- | --- |
+| PUT | `/v1/orion/buckets/:bucket/objects/:key` | Upload an object |
+| GET | `/v1/orion/buckets/:bucket/objects/:key` | Retrieve an object |
+| POST | `/v1/orion/buckets/:bucket/purge` | Purge CDN cache for a path |
+
+## Support
+
+For questions about Orion, contact the product team or visit the community forum.
