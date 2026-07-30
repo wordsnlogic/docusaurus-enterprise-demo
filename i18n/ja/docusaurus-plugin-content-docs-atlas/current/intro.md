@@ -5,16 +5,22 @@ sidebar_position: 1
 
 # はじめに
 
-Atlas のドキュメントへようこそ。
+Atlas は Northwind Cloud のプロダクト分析 API です。イベントを送信するだけで、ファネル、リテンション
+コホート、クエリ可能な生データが得られます。
 
-Atlas は Northwind Cloud プラットフォームの製品ラインのひとつです。
+## Atlas ではないもの
+
+Atlas はイベント API であり、完全な CDP ではありません——リバース ETL やデスティネーションへの
+ファンアウトには対応していません。それらが必要な場合は [Cascade](/docs/cascade/intro) と組み合わせて
+ください。
 
 ## 主な機能
 
-- Real-time event streaming with sub-second ingestion
-- Custom funnels and retention cohorts
-- SQL-based ad-hoc querying over raw event data
+- サブ秒単位のリアルタイムイベントストリーミング
+- バッチではなく都度計算されるファネルとリテンションコホート
+- [クエリエンドポイント](./api-reference.md)経由の SQL アドホッククエリ
 
-## このセクションの内容
+## はじめる前に
 
-このセクションでは、インストール、設定、およびこの製品と連携するために必要な基本概念について説明します。
+[はじめに](./getting-started.md)に進む前に、まず[コンセプト](./concepts.md)を読んでください——
+最も多い統合ミスである、イベント命名の不整合によって数週間後にファネルが壊れる事態を防げます。

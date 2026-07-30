@@ -5,16 +5,21 @@ sidebar_position: 1
 
 # Introduction
 
-Bienvenue dans la documentation de Atlas.
+Atlas est l'API d'analytics produit de Northwind Cloud : vous envoyez des events, vous récupérez funnels,
+cohorts de rétention et données brutes interrogeables.
 
-Atlas est l'une des gammes de produits de la plateforme Northwind Cloud.
+## Ce qu'Atlas n'est pas
+
+Ce n'est pas une CDP complète — pas de reverse-ETL ni de fan-out vers des destinations. Pour ça, combinez
+avec [Cascade](/docs/cascade/intro).
 
 ## Fonctionnalités clés
 
-- Real-time event streaming with sub-second ingestion
-- Custom funnels and retention cohorts
-- SQL-based ad-hoc querying over raw event data
+- Streaming temps réel, ingestion en moins d'une seconde
+- Funnels et cohorts calculés à la volée, pas en batch
+- Requêtes SQL ad hoc via le [endpoint de requête](./api-reference.md)
 
-## Contenu de cette section
+## Avant de commencer
 
-Cette section couvre l'installation, la configuration et les concepts essentiels pour intégrer ce produit.
+Lisez [Concepts](./concepts.md) avant [Bien démarrer](./getting-started.md) — dix minutes qui évitent
+l'erreur la plus fréquente : un nommage d'events incohérent qui casse les funnels des semaines plus tard.

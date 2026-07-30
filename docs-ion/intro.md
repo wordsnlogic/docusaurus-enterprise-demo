@@ -5,16 +5,24 @@ sidebar_position: 1
 
 # Introduction
 
-Welcome to the Ion documentation.
+Ion is Northwind Cloud's payments API: charges, saved payment methods, subscriptions, and refunds across
+135+ currencies, with PCI-DSS Level 1 compliant card vaulting so you never need to handle raw card numbers
+on your own servers.
 
-Ion is one of the product lines in the Northwind Cloud platform. Global payments and billing.
+## Test mode vs. live mode
+
+Every Ion account has separate test and live API keys (prefixed `sk_test_` and `sk_live_`). Test-mode
+charges use the same API and validation rules as live mode but never move real money — build and test your
+entire integration in test mode, including failure paths, before switching keys.
 
 ## Key features
 
 - 135+ currencies and local payment methods
-- PCI-DSS Level 1 compliant card vaulting
-- Usage-based and subscription billing
+- PCI-DSS Level 1 compliant card vaulting — card numbers never touch your servers
+- Usage-based and subscription billing with automatic dunning on failed renewals
 
-## What you'll find here
+## Before you start
 
-This section covers installation, configuration, and the core concepts you need to integrate with this product.
+Read [Concepts](./concepts.md) — in particular how amounts are represented as integers and how
+idempotency keys work — before writing any charge-creation code. Both are easy to get wrong once and
+expensive to get wrong in production.

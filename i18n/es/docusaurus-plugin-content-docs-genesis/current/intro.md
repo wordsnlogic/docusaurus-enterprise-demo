@@ -5,16 +5,25 @@ sidebar_position: 1
 
 # Introducción
 
-Bienvenido a la documentación de Genesis.
+Genesis es la plataforma de identidad de Northwind Cloud: cuentas de usuario, sesiones, permisos
+basados en roles y SSO empresarial (SAML/OIDC), para que no tengas que construir la autenticación desde
+cero.
 
-Genesis es una de las líneas de producto de la plataforma Northwind Cloud.
+## Para quién es esto
 
-## Características principales
+Si construyes un producto B2C, usarás principalmente los endpoints de sesión y passkey/magic-link. Si
+vendes a empresas, también necesitarás [conexiones SSO](./concepts.md) — reserva tiempo
+extra de integración, ya que el proveedor de identidad de cada cliente (Okta, Azure AD, Google
+Workspace) se comporta ligeramente distinto incluso bajo la misma especificación SAML/OIDC.
 
-- SAML and OIDC SSO out of the box
-- Passwordless magic-link and passkey login
-- Fine-grained role-based access control
+## Características clave
 
-## Qué encontrarás aquí
+- SSO SAML y OIDC, delimitado por dominio de correo del cliente
+- Login sin contraseña con magic-link y passkeys WebAuthn
+- Control de acceso granular basado en permisos, no en nombres de rol
 
-Esta sección cubre la instalación, la configuración y los conceptos clave para integrarte con este producto.
+## Antes de empezar
+
+[Conceptos](./concepts.md) cubre el modelo de sesión/token y el comportamiento de aplicación de dominio
+SSO que suele confundir en las primeras integraciones — léelo antes de [Primeros
+pasos](./getting-started.md).

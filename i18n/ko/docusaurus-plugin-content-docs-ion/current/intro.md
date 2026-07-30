@@ -5,16 +5,22 @@ sidebar_position: 1
 
 # 소개
 
-Ion 문서에 오신 것을 환영합니다.
+Ion은 Northwind Cloud의 결제 API입니다 — 135개 이상의 통화로 청구, 저장된 결제 수단, 구독, 환불을
+처리하며 PCI-DSS Level 1 카드 보관을 지원해 원시 카드 번호가 서버에 닿지 않습니다.
 
-Ion는 Northwind Cloud 플랫폼의 제품 라인 중 하나입니다.
+## 테스트 모드와 라이브 모드
+
+모든 Ion 계정은 테스트(`sk_test_`)와 라이브(`sk_live_`) 키를 분리해서 제공합니다. 테스트 모드는 실제
+검증 로직을 그대로 사용하지만 실제 자금은 이동하지 않습니다 — 실패 경로를 포함해 전체 통합을 테스트
+모드에서 검증한 뒤 전환하세요.
 
 ## 주요 기능
 
-- 135+ currencies and local payment methods
-- PCI-DSS Level 1 compliant card vaulting
-- Usage-based and subscription billing
+- 135개 이상의 통화 및 현지 결제 수단
+- PCI-DSS Level 1 카드 보관 — 카드 번호가 서버에 닿지 않음
+- 사용량 기반 및 구독형 청구, 실패 시 자동 던닝
 
-## 이 문서에서 다루는 내용
+## 시작하기 전에
 
-이 섹션에서는 설치, 구성, 그리고 이 제품과 연동하기 위해 필요한 핵심 개념을 다룹니다.
+[개념](./concepts.md)에서 금액이 정수로 표현되는 방식과 멱등성 키의 동작을 먼저 읽으세요. 두 가지
+모두 실수하기 쉽고 프로덕션에서 고치기 비쌉니다.

@@ -99,7 +99,7 @@
     "id": "genesis",
     "name": "Genesis",
     "tagline": "Identity, auth, and SSO platform",
-    "versioned": false,
+    "versioned": true,
     "keyFeatures": [
       "SAML and OIDC SSO out of the box",
       "Passwordless magic-link and passkey login",

@@ -1,28 +1,72 @@
 ---
-title: Guida introduttiva
-sidebar_position: 2
+title: Avvio rapido
+sidebar_position: 3
 ---
 
-# Guida introduttiva
+# Avvio rapido
 
 ## Prerequisiti
 
-Prima di iniziare, assicurati di avere un account Northwind Cloud e l'accesso API abilitato per Genesis.
+Un account Northwind Cloud con Genesis abilitato e una chiave API da servizio a servizio
+(**Impostazioni → Chiavi API**).
 
-## Installazione
+## Crea un utente
 
-Installa l'SDK di Genesis con il gestore di pacchetti che preferisci, quindi inizializzalo con la chiave API del tuo progetto.
+**cURL**
 
 ```bash
-npm install @northwind/genesis
+curl https://api.northwind.cloud/v1/genesis/users \
+  -H "Authorization: Bearer $GENESIS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "email": "jordan@acme.com", "roles": ["member"] }'
 ```
 
-## Avvio rapido
-
-Il modo più veloce per vedere Genesis in azione è eseguire l'esempio di avvio rapido nel tuo ambiente locale.
+**Node.js**
 
 ```js
 import { Genesis } from "@northwind/genesis";
 
-const client = new Genesis({ apiKey: process.env.NORTHWIND_API_KEY });
+const genesis = new Genesis({ apiKey: process.env.GENESIS_API_KEY });
+
+const user = await genesis.users.create({
+  email: "jordan@acme.com",
+  roles: ["member"],
+});
 ```
+
+**Python**
+
+```python
+from northwind_genesis import Genesis
+
+genesis = Genesis(api_key=os.environ["GENESIS_API_KEY"])
+
+user = genesis.users.create(email="jordan@acme.com", roles=["member"])
+```
+
+## Avvia una sessione (login)
+
+Le sessioni vengono create con un flusso separato rivolto all'utente — tipicamente chiamato dal gestore
+di invio del tuo form di login, non con la tua chiave API di servizio:
+
+```bash
+curl https://api.northwind.cloud/v1/genesis/sessions \
+  -H "Content-Type: application/json" \
+  -d '{ "email": "jordan@acme.com", "password": "user-entered-password" }'
+```
+
+Una risposta di successo include un `token` di breve durata. Se l'account ha MFA attivo, questa chiamata
+restituisce invece `403 mfa_required` — vedi il passaggio di verifica MFA in
+[Riferimento API](./api-reference.md).
+
+## Configura SSO per un dominio cliente
+
+```bash
+curl https://api.northwind.cloud/v1/genesis/sso/connections \
+  -H "Authorization: Bearer $GENESIS_API_KEY" \
+  -d '{ "domain": "acme.com", "protocol": "saml", "metadata_url": "https://acme.okta.com/app/.../sso/saml/metadata" }'
+```
+
+**Testa prima con un dominio non di produzione.** Una volta attiva la connessione, il login con
+password viene disabilitato per tutti gli utenti di quel dominio — vedi perché in
+[Concetti](./concepts.md).

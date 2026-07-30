@@ -5,16 +5,21 @@ sidebar_position: 1
 
 # 简介
 
-欢迎查阅 Ion 文档。
+Ion 是 Northwind Cloud 的支付 API：支持 135+ 种货币的收款、已保存支付方式、订阅和退款，并提供
+PCI-DSS Level 1 合规的卡片托管，原始卡号无需经过你的服务器。
 
-Ion 是 Northwind Cloud 平台众多产品线之一。
+## 测试模式与生产模式
+
+每个 Ion 账户都有独立的测试密钥（`sk_test_`）和生产密钥（`sk_live_`）。测试模式使用与生产环境相同的
+校验逻辑，但不会移动真实资金——请先在测试模式下完整验证集成（包括失败路径），再切换密钥。
 
 ## 核心功能
 
-- 135+ currencies and local payment methods
-- PCI-DSS Level 1 compliant card vaulting
-- Usage-based and subscription billing
+- 支持 135+ 种货币及本地支付方式
+- PCI-DSS Level 1 合规的卡片托管——卡号不经过你的服务器
+- 按量计费与订阅计费，失败自动进入催收流程
 
-## 本节内容
+## 开始之前
 
-本节介绍安装、配置以及与该产品集成所需的核心概念。
+请先阅读[核心概念](./concepts.md)，了解金额如何以整数表示以及幂等键的工作方式，再编写收款代码。
+这两点一旦出错，在生产环境中修复成本很高。
