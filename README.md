@@ -110,6 +110,19 @@ vercel login
 vercel --prod
 ```
 
+**Note on the custom `northwind-cloud.vercel.app` alias**: this project's `.vercel.app` domain history
+is a bit tangled (it was originally created as `docusaurus-enterprise-demo`, then a second alias was added
+later rather than renamed cleanly). `northwind-cloud.vercel.app` does **not** automatically follow new
+production deploys the way the original domain does — after each `vercel --prod`, re-point it:
+
+```bash
+vercel ls --prod   # find the newest deployment URL
+vercel alias set <newest-deployment-url> northwind-cloud.vercel.app
+```
+
+A clean setup from scratch (`vercel project add northwind-cloud` before the first deploy) wouldn't have
+this issue — noting it here rather than pretending it isn't a wart.
+
 Or GitHub Pages, using Docusaurus's built-in deploy command:
 
 ```bash
